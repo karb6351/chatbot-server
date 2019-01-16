@@ -1,7 +1,9 @@
-const User = require('../../models/User');
+const User = require('../../models/user');
+const Admin = require('../../models/admin')
 
 const passwordHelper = require('../../helpers/password_helper');
 const tokenHelper = require('../../helpers/token_helper');
+const notificationHelper = require('../../helpers/notification_helper');
 
 const authentication = {
 	apiRegister: (req, res) => {
@@ -53,12 +55,42 @@ const authentication = {
 				res.status(404).json({ success: false, message: error.message });
 			});
 	},
-	apiLogout: (req, res) => {
-		
+	apiLogout: (req, res) => {},
+
+	login: (req, res) => {
+		res.render('specials/login_page');
 	},
-	login: (req, res) => {},
-	doLogin: (req, res) => {},
-	logout: (req, res) => {}
+	doLogin: (req, res) => {
+		const {username, password} = req.body;
+		Admin.findOne({
+			where: {username},
+		})
+		.then(user => {
+			if (!user) throw Error('User not found');
+				// do the password comparsion
+				return passwordHelper.comparePassword(password, user.password);	
+		})
+		.then(result => {
+			if (result) {
+				// generate jwt when it is authenticated
+				req.session.username = username
+				req.flash('flash_message', 'asd');
+				// notificationHelper.addFlashMessage(req, notificationHelper.SUCCESS, `Welcome back.${username}`)
+				console.log(req.session)
+				res.redirect('/home')
+			} else {
+				throw Error('Invalid password');
+			}
+		})
+		.catch(error => {
+			console.error(error)
+			res.redirect('back')
+		})
+	},
+	logout: (req, res) => {
+		req.session.username = null;
+		res.redirect('/home')
+	}
 };
 
 module.exports = authentication;

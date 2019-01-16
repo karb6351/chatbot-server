@@ -2,7 +2,7 @@ const path = require('path')
 const NodemonPlugin = require( 'nodemon-webpack-plugin' )
 
 const config = {
-	entry: path.join(__dirname, '../', 'asset/js/index.js'),
+	entry: path.join(__dirname, '../', 'resources/asset/js/index.js'),
 	output: {
 		path: path.join(__dirname, '../', 'public/js/'),
 		filename: 'bundle.js',
@@ -17,11 +17,15 @@ const config = {
 				query: {
 					presets: [ "@babel/preset-env" ]
 				}
-      },
-      // {
+			},
+			// {
 			// 	test: /\.scss$/,
-			// 	loader: 'scss-loader'
-      // },
+			// 	use: [
+			// 			"style-loader", // creates style nodes from JS strings
+			// 			"css-loader", // translates CSS into CommonJS
+			// 			"sass-loader" // compiles Sass to CSS, using Node Sass by default
+			// 	]
+			// }
 		]
   },
   plugins: [

@@ -1,0 +1,15 @@
+.login-page-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .login-form{
+    width: 400px;    
+    @media screen and (max-width: 425px) {
+      width: 100%;  
+    }
+    .logo{
+      margin: 0 auto;
+      width: 250px;
+    }    
+  }  
+}

@@ -1,0 +1,25 @@
+<form action={{ }}>
+  {{#each form.field as |index value|}}
+  <div class="field">
+    <label class="label" for={{ value.name }}>{{ value.label }}</label>
+    <div class="control 
+    {{ value.icon.has_icons_left ? 'has-icons-left' : '' }} 
+    {{ value.icon.has_icons_right ? 'has-icons-right' : '' }}">
+      <input class="input" type="text" placeholder={{ value.placeholder ? value.placeholder : '' }} />
+      {{#if value.icon.has_icons_left }}
+      <span class="icon is-small is-left">
+        <i class={{ value.icon_right }}></i>
+      </span>
+      {{/if}}
+      {{#if value.icon.has_icons_right }}
+      <span class="icon is-small is-right">
+        <i class={{ value.icon_right }}></i>
+      </span>
+      {{/if}}
+    </div>
+    {{#if value.help.has_help_block}}
+    <p class="help {{ value.help.type }}">{{ value.help.text }}</p>
+    {{/if}}
+  </div>
+  {{/each}}
+</form>

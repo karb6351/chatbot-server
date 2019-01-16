@@ -1,11 +1,20 @@
 const router = require('express').Router();
 
-//add router group(non-api) to express module
+const authMiddleware = require('../../app/middlewares/auth');
 
-router.get('/', (req, res, next) => {
-	res.render('partial/dashboard/index');
-});
+const authenticationController = require("../../app/controllers/authentication_controller");
+const homeController = require('../../app/controllers/home_controller');
 
-router.use('/', require('./authentication'));
+router.use(authMiddleware);
+
+/** add router group(non-api) to express module  */
+
+// authentication
+router.get('/login', authenticationController.login)
+router.post('/login', authenticationController.doLogin)
+router.get('/logout', authenticationController.logout)
+
+// home
+router.use('/home', homeController.index);
 
 module.exports = router;

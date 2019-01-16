@@ -1,1 +1,3 @@
-console.log('321')
+
+
+setTimeout(() => console.log('321'), 500)

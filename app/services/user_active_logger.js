@@ -1,13 +1,14 @@
 const cache = require('memory-cache');
 
 class UserActiveLogger {
-  createUserInfo(key){
-    cache.put(key, {
-      currentAction: "",
-      history: []
-    });
-  }
-	addHistory(key, question, answer, intent, wish) {
+	createUserInfo(key) {
+		cache.put(key, {
+			history: [],
+			currentAction: '',
+			currentLocation: ''
+		});
+	}
+	addHistory(key, { question, answer, intent, wish, location }) {
 		userActiveInfo = cache.get(key);
 		newHistory = [
 			...userActiveInfo.history,
@@ -15,20 +16,26 @@ class UserActiveLogger {
 				question,
 				answer,
 				intent,
-				wish
+				wish,
+				location
 			}
 		];
 		userActiveInfo.history = newHistory;
 		cache.put(key, userActiveInfo);
-  }
-  addCurrentAction(key, action){
-    userActiveInfo = cache.get(key);
-    userActiveInfo.currentAction = action
-    cache.put(key, userActiveInfo);
-  }
-  deleteUserInfo(key){
-    return cache.del(key)
-  }
+	}
+	addCurrentAction(key, action) {
+		userActiveInfo = cache.get(key);
+		userActiveInfo.currentAction = action;
+		cache.put(key, userActiveInfo);
+	}
+	getUserInfo(key) {
+		return cache.get(key);
+	}
+	deleteUserInfo(key) {
+		return cache.del(key);
+	}
 }
 
-module.exports = new UserActiveLogger();
+const UserActiveLogger = new UserActiveLogger();
+
+module.exports = UserActiveLogger;

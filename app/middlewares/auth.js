@@ -1,12 +1,23 @@
-const tokenHelper = require('../helpers/token_helper')
+const _ = require('underscore')
+const guestPath = ['/login']
 
-exports.auth = (req, res, next) => {
-    const token = req.body.token || req.query.token || req.headers['x-access-token']
-    const decode = tokenHelper.verifyToken(token)
-    if (!(token && decode)){
-        res.status(404).json({success: false, message: 'Unauthentication'})
+const authentication = (req, res, next) => {
+  // for guest
+  if (_.contains(guestPath, req.path)){
+    if (req.session.username){
+      return res.redirect('/home')
     }else{
-        req.decode = decode
-        next()
+      next()
     }
+  }else{
+    // for authenticated user
+    if (req.session.username === undefined || !req.session.username){
+      return res.redirect('/login')
+    }else{
+      next()
+    }
+  }
+  
 }
+
+module.exports = authentication

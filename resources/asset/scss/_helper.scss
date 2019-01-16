@@ -1,0 +1,47 @@
+
+/*
+* Specifies the spacing values which should be generated with padding and
+* margin classes. Feel free to modify the values as required
+*
+*/
+$spaceamounts: (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 35, 40, 45, 50, 75, 100); // Adjust this to include the pixel amounts needed.
+
+/*
+* The sides which margin and padding classes will be generate for. Pleas
+* leave this list alone
+*
+*/
+$sides: (top, bottom, left, right);
+
+/*
+* Generate classes for overall padding and margins
+*
+*/
+@each $space in $spaceamounts {
+  .m-#{$space} {
+    margin: #{$space}px;
+  }
+  .p-#{$space} {
+    padding: #{$space}px;
+  }
+}
+
+/*
+* Generate classes for spcific sides for padding and margins.
+*
+*/
+@each $space in $spaceamounts {
+  @each $side in $sides {
+
+    // Generate margins for all four sides
+    .m-#{$side}-#{$space} {
+      margin-#{$side}: #{$space}px;
+    }
+
+    // Generate paddings for all four sides
+    .p-#{$side}-#{$space} {
+      padding-#{$side}: #{$space}px;
+    }
+  }
+}
+

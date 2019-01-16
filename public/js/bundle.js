@@ -81,19 +81,21 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./app/asset/js/index.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./resources/asset/js/index.js");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./app/asset/js/index.js":
-/*!*******************************!*\
-  !*** ./app/asset/js/index.js ***!
-  \*******************************/
+/***/ "./resources/asset/js/index.js":
+/*!*************************************!*\
+  !*** ./resources/asset/js/index.js ***!
+  \*************************************/
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-console.log('321');
+setTimeout(function () {
+  return console.log('321');
+}, 500);
 
 /***/ })
 
