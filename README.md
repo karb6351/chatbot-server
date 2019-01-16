@@ -11,7 +11,7 @@ run `npm install` in terminal to install all dependencies
 run `node_modules/.bin/sequelize db:migrate` in terminal for migration
 
 #### step 4
-run `$ node_modules/.bin/sequelize db:seed:all` in terminal to run the seed
+run `node_modules/.bin/sequelize db:seed:all` in terminal to run the seed
 
 #### common commend
 * `npm run start` -- create server
