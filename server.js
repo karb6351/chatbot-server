@@ -4,7 +4,8 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const hbs = require('express-handlebars');
+// const hbs = require('express-handlebars');
+const engine = require('ejs-mate');
 const path = require('path');
 const cookieSession = require('cookie-session');
 const flash = require('express-flash');
@@ -33,14 +34,14 @@ app.use(
 );
 
 // cookie parse setup
-app.use(cookieParse('secret'))
+app.use(cookieParse('secret'));
 
 // flash session
 app.use(flash());
 app.use((req, res, next) => {
-    res.locals.flash_message = req.flash('flash_message')
-    next()
-})
+	res.locals.flash_message = req.flash('flash_message');
+	next();
+});
 
 // cors setup
 app.use(cors());
@@ -51,15 +52,28 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // view engine setup
-app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'app', layoutsDir: __dirname + '/resources/views/layouts/', partialsDir: __dirname + '/resources/views/partials/' }));
+// app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'app', layoutsDir: __dirname + '/resources/views/layouts/', partialsDir: __dirname + '/resources/views/partials/' }));
+// app.set('views', path.join(__dirname, 'resources/views'));
+// app.set('view engine', 'hbs');
+
+app.engine('ejs', engine);
 app.set('views', path.join(__dirname, 'resources/views'));
-app.set('view engine', 'hbs');
+app.set('view engine', 'ejs');
 
 // for view to access session
-app.use(function (req, res, next) {
-    res.locals.session = req.session;
-    next();
-});
+app.use(
+	(req, res, next) => {
+		res.locals.session = req.session;
+		next();
+	},
+	(req, res, next) => {
+		app.locals.currentPath = req.path;
+		next();
+	}
+);
+
+//commmon variable
+app.locals.menu = require('./config/menu');
 
 // routes
 app.use('/api', apiRoutes);

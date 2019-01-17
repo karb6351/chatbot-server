@@ -1,0 +1,28 @@
+<aside class="sidebar menu">
+
+  <% menu.map(group => { %>
+    <p class="menu-label is-hidden-touch"><%=group.group_label %></p>
+    <ul class="menu-list">
+    <% group.menu.map(menuItem => { %>
+      <li>
+        <a href="<%= menuItem.link %>" class="<%= currentPath == menuItem.link ? 'is-active' : '' %>">
+          <span class="icon"><i class="<%= menuItem.icon %>"></i></span>
+          <span><%= menuItem.label %></span>
+        </a>
+        <% if(menuItem.submenu && menuItem.submenu.length !== 0){ %>
+          <ul>
+          <% menuItem.submenu.map(submenuItem => { %>
+            <li>
+              <a href="<%= submenuItem.link %>" class="<%= currentPath == menuItem.link ? 'is-active' : '' %>">
+                <span class="icon is-small"><i class="<%= submenuItem.icon %>"></i></span>
+                <span><%= submenuItem.label %></span>
+              </a>
+            </li>
+          <% }) %>
+          </ul>
+        <% } %>
+      </li>
+    <% }) %>
+    </ul>
+  <% }) %>
+</aside>

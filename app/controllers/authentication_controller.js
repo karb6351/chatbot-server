@@ -58,7 +58,7 @@ const authentication = {
 	apiLogout: (req, res) => {},
 
 	login: (req, res) => {
-		res.render('specials/login_page');
+		res.render('pages/authentication/login');
 	},
 	doLogin: (req, res) => {
 		const {username, password} = req.body;

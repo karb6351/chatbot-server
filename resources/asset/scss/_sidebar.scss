@@ -1,4 +1,6 @@
 .sidebar{
-  background: white;
-  padding: 10px 15px;
+  background: #ffffff;
+  padding: 10px 5px;
+  min-height: calc(100vh - 52px);
+  transition: all ease-in-out 200ms;
 }

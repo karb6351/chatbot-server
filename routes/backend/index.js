@@ -17,4 +17,7 @@ router.get('/logout', authenticationController.logout)
 // home
 router.use('/home', homeController.index);
 
+
+router.get('/', (req, res) => res.redirect('/home'))
+
 module.exports = router;

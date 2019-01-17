@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Admin Panel</title>
+  
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <% if (session.username){ %>
+    <%- include('include/nav.ejs') %>
+    <section class="main-content is-fullheight">
+      <div class="columns is-fullheight">
+        <div class="column is-one-fifths-desktop is-narrow-mobile is-fullheight is-hidden-mobile">
+          <%- include('./include/menu.ejs') %>
+        </div>
+        <div class="column is-four-fifths-desktop ">
+          <%- body %>
+        </div>
+      </div>
+    </section>
+  <% }else{ %>
+    <%- body %>
+  <% } %>
+  <%- include('./include/notification.ejs') %>
+</body>
+<script src="js/bundle.js"></script>
+</html>

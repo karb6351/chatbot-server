@@ -1,0 +1,6 @@
+<% if (session.flash_message){ %>
+<div class="notification {{ session.flash_message.type }}">
+  <button class="delete"></button>
+  <%=session.flash_message.message %>
+</div>
+<% } %>
