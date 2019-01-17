@@ -2,7 +2,7 @@
 
 #### step 1
 * _create and config the .env file, you can copy the variable from .env.example_
-* _create and modify config.json in config folder_
+* _create and modify config.json in config folder, you can copy the variable from config.example.json_
 
 #### step 2
 run `npm install` in terminal to install all dependencies
