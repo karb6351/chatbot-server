@@ -22,5 +22,4 @@ run `node_modules/.bin/sequelize db:seed:all` in terminal to run the seed
 * css framework: https://bulma.io/
 * mysql libray: http://docs.sequelizejs.com/
 * icon libray: https://fontawesome.com/
-* icon libray: https://fontawesome.com/
 * watson chatbot: https://assistant-us-south.watsonplatform.net/
