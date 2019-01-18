@@ -17,3 +17,10 @@ run `node_modules/.bin/sequelize db:seed:all` in terminal to run the seed
 * `npm run start` -- start running server
 * `npm run js` -- start webpack hot reloading for auto compiling javascript
 * `npm run sass` -- start sass complie hot reloading for auto compiling css
+
+#### common dependencies
+* css framework: https://bulma.io/
+* mysql libray: http://docs.sequelizejs.com/
+* icon libray: https://fontawesome.com/
+* icon libray: https://fontawesome.com/
+* watson chatbot: https://assistant-us-south.watsonplatform.net/
