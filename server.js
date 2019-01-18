@@ -34,7 +34,7 @@ app.use(
 );
 
 // cookie parse setup
-app.use(cookieParse('secret'));
+app.use(cookieParse());
 
 // flash session
 app.use(flash());
