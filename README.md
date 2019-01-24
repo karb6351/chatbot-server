@@ -23,3 +23,5 @@ run `node_modules/.bin/sequelize db:seed:all` in terminal to run the seed
 * mysql libray: http://docs.sequelizejs.com/
 * icon libray: https://fontawesome.com/
 * watson chatbot: https://assistant-us-south.watsonplatform.net/
+* sql library(for migration and seeder): http://docs.sequelizejs.com/manual/tutorial/migrations.html
+* sql library(for model usage): http://docs.sequelizejs.com/manual/tutorial/models-usage.html
