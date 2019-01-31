@@ -5,7 +5,12 @@ class UserActiveLogger {
 		cache.put(key, {
 			history: [],
 			currentAction: '',
-			currentLocation: ''
+			currentLocation: '',
+			location: {
+				next: '',
+				last: '',
+				current: ''
+			}
 		});
 	}
 	addHistory(key, { question, answer, intent, wish, location }) {

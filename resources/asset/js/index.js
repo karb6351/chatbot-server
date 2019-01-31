@@ -1,3 +1,5 @@
 
 
-setTimeout(() => console.log('321'), 500)
+import testFun from './example'
+
+testFun()

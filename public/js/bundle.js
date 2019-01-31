@@ -86,16 +86,35 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./resources/asset/js/example.js":
+/*!***************************************!*\
+  !*** ./resources/asset/js/example.js ***!
+  \***************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var testFun = function testFun() {
+  console.log(500);
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (testFun);
+
+/***/ }),
+
 /***/ "./resources/asset/js/index.js":
 /*!*************************************!*\
   !*** ./resources/asset/js/index.js ***!
   \*************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
-setTimeout(function () {
-  return console.log('321');
-}, 500);
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _example__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./example */ "./resources/asset/js/example.js");
+
+Object(_example__WEBPACK_IMPORTED_MODULE_0__["default"])();
 
 /***/ })
 
