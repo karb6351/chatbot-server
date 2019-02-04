@@ -15,13 +15,20 @@ module.exports = {
           notEmpty: true,
         }
       },
-      password: {
+      identifier: {
         type: Sequelize.STRING,
         validate: {
           notNull: true,
           notEmpty: true,
         }
       },
+      // password: {
+      //   type: Sequelize.STRING,
+      //   validate: {
+      //     notNull: true,
+      //     notEmpty: true,
+      //   }
+      // },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

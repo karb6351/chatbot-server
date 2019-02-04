@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 
-exports.generateToken = ({ username }) =>
-	jwt.sign({ username }, `${process.env.JWT_CERT}`, {
+exports.generateToken = (payload) =>
+	jwt.sign({ id: payload }, `${process.env.JWT_CERT}`, {
 		// expiresIn: "1d"
 	})
 

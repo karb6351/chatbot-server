@@ -1,12 +1,22 @@
-const mongoose = require('mongoose')
+const Sequelize = require('sequelize');
+const sequelizeService = require('../app/services/sequelize_service')
 
-const RouteSchema = mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
-    locations: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Location'
-    }],
+const location = require('./location');
 
-})
+const route = sequelizeService.define('route', {
+    title: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        notNull(value) {
+          if (value == null) {
+            throw new Error('Empty title')
+          }
+        }
+      }
+    }
+  });
 
-module.exports = mongoose.Model('Route', RouteSchema)
+  route.hasMany(location);
+  
+  module.exports = route

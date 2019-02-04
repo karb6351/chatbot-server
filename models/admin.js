@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const sequelizeService = require('../app/services/sequelize_service')
 
-const Admin = sequelizeService.define('admin', {
+const Admin = sequelizeService.define('admins', {
     username: {
       type: Sequelize.STRING,
       allowNull: false,

@@ -1,8 +1,11 @@
-const cache = require('memory-cache');
-
 class UserActiveLogger {
-	createUserInfo(key) {
-		cache.put(key, {
+	constructor(){
+		this.users = {};
+	}
+	createUserInfo(key, user) {
+		this.users[key] = {
+			user: user,
+			routeId: '',
 			history: [],
 			currentAction: '',
 			currentLocation: '',
@@ -11,10 +14,10 @@ class UserActiveLogger {
 				last: '',
 				current: ''
 			}
-		});
+		};
 	}
 	addHistory(key, { question, answer, intent, wish, location }) {
-		userActiveInfo = cache.get(key);
+		let userActiveInfo = this.user[key];
 		newHistory = [
 			...userActiveInfo.history,
 			{
@@ -26,21 +29,35 @@ class UserActiveLogger {
 			}
 		];
 		userActiveInfo.history = newHistory;
-		cache.put(key, userActiveInfo);
+		this.users[key] = userActiveInfo;
 	}
 	addCurrentAction(key, action) {
-		userActiveInfo = cache.get(key);
+		let userActiveInfo = this.users[key];
 		userActiveInfo.currentAction = action;
-		cache.put(key, userActiveInfo);
+		this.users[key] = userActiveInfo;
+	}
+	addCurrentLocation(key, location) {
+		let userActiveInfo = this.users[key];
+		userActiveInfo.currentLocation = location;
+		this.users[key] = userActiveInfo;
+	}
+	addRouteId(key, routeId) {
+		console.log(key, routeId);
+		let userActiveInfo = this.users[key];
+		userActiveInfo.routeId = routeId;
+		this.users[key] = userActiveInfo;
+	}
+	getUsersInfo(){
+		return this.users;
 	}
 	getUserInfo(key) {
-		return cache.get(key);
+		return this.users[key];
 	}
 	deleteUserInfo(key) {
-		return cache.del(key);
+		delete this.users[key];
 	}
 }
 
-const UserActiveLogger = new UserActiveLogger();
+const userActiveLogger = new UserActiveLogger();
 
-module.exports = UserActiveLogger;
+module.exports = userActiveLogger;

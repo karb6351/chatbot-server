@@ -1,35 +1,39 @@
-const mongoose = require('mongoose')
+const Sequelize = require('sequelize');
+const sequelizeService = require('../app/services/sequelize_service');
 
-const LocationSchema = mongoose.Schema({
-    _id: mongoose.Schema.Types.ObjectId,
-    name: {
-        type: String,
-        require: true
-    },
+const route = require('./route');
+// const restaurant = require('./restaurant');
+// const event = require('./event');
+// const generalLocalKnowledge = require('./generalLocalKnowledge');
+
+const location = sequelizeService.define('location', {
     location: {
-        type: {
-            type: String, // Don't do `{ location: { type: String } }`
-            enum: ['Point'], // 'location.type' must be 'Point'
-            required: true
-        },
-        coordinates: {
-            type: [Number],
-            required: true
+      type: Sequelize.GEOMETRY,
+      allowNull: false,
+      validate: {
+        notNull(value) {
+          if (value == null) {
+            throw new Error('Empty location')
+          }
         }
+      }
     },
-    restaurant: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Restaurant"
-    },
-    routes: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Route"
-    }],
-    events: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Event"
-    }] 
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        notNull(value) {
+          if (value == null) {
+            throw new Error('Empty name')
+          }
+        }
+      }
+    }
+  });
 
-})
+  // Location.hasOne(restaurant);
+  // Location.hasOne(event);
+  // Location.hasOne(generalLocalKnowledge);
 
-module.exports = mongoose.Model('Location', LocationSchema)
+  
+  module.exports = location

@@ -14,6 +14,8 @@ const cookieParse = require('cookie-parser');
 const apiRoutes = require('./routes/api/index');
 const backendRoutes = require('./routes/backend/index');
 
+const startSocket = require('./socket');
+
 // webpack setup
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
@@ -72,13 +74,16 @@ app.use(
 	}
 );
 
+const server = app.listen(process.env.APP_PORT || 8000, () => {
+	console.log('Server is running...');
+});
+
+// start socket io
+startSocket(server);
+
 //commmon variable
 app.locals.menu = require('./config/menu');
 
 // routes
 app.use('/api', apiRoutes);
 app.use('/', backendRoutes);
-
-app.listen(process.env.APP_PORT || 8000, () => {
-	console.log('Server is running...');
-});

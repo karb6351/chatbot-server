@@ -1,5 +1,7 @@
 // for each user(or autherication), they should contain current intent variable(maybe use session)
 
+const userActiveLogger =  require('../services/user_active_logger');
+
 // simulate current intent variable
 let currentIntent = null
 
@@ -11,6 +13,7 @@ const dumpResponse = {
 }
 
 exports.process_message = ({ intents, entites, output, context }) => {
+
     // when the branch is exited, it means no further information is required, system can process the result
     // when the branch is not exited, it means we still required other information to process the request
     if (context.system.branch_exited) {
@@ -27,6 +30,7 @@ exports.process_message = ({ intents, entites, output, context }) => {
 
         //we also need to clear current intent
         currentIntent = null
+
         // return the response message
         return messageObj
     } else {
