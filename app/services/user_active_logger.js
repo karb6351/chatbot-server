@@ -1,14 +1,18 @@
 class UserActiveLogger {
-	constructor(){
+	constructor() {
 		this.users = {};
+
+		this.ACTION_WALK = 0;
+		this.ACTION_EAT = 1;
+		this.ACTION_STOP = 2;
 	}
 	createUserInfo(key, user) {
 		this.users[key] = {
 			user: user,
-			routeId: '',
+			routeId: -1,
 			history: [],
 			currentAction: '',
-			currentLocation: '',
+			currentCoordinate: '',
 			location: {
 				next: '',
 				last: '',
@@ -16,16 +20,17 @@ class UserActiveLogger {
 			}
 		};
 	}
-	addHistory(key, { question, answer, intent, wish, location }) {
-		let userActiveInfo = this.user[key];
-		newHistory = [
+	addHistory(key, { question, answer, intent, wish, location, context }) {
+		let userActiveInfo = this.users[key];
+		let newHistory = [
 			...userActiveInfo.history,
 			{
 				question,
 				answer,
 				intent,
 				wish,
-				location
+				location,
+				context
 			}
 		];
 		userActiveInfo.history = newHistory;
@@ -36,18 +41,35 @@ class UserActiveLogger {
 		userActiveInfo.currentAction = action;
 		this.users[key] = userActiveInfo;
 	}
-	addCurrentLocation(key, location) {
+	addCurrentCoordinate(key, location) {
 		let userActiveInfo = this.users[key];
-		userActiveInfo.currentLocation = location;
+		userActiveInfo.currentCoordinate = location;
 		this.users[key] = userActiveInfo;
 	}
 	addRouteId(key, routeId) {
-		console.log(key, routeId);
 		let userActiveInfo = this.users[key];
 		userActiveInfo.routeId = routeId;
 		this.users[key] = userActiveInfo;
 	}
-	getUsersInfo(){
+	isJoined(key){
+		return this.users[key].routeId !== -1;
+	}
+	setNextLocation(key, location){
+		let userActiveInfo = this.users[key];
+		userActiveInfo.location.next = location;
+		this.users[key] = userActiveInfo;
+	}
+	setCurrentLocation(key, location){
+		let userActiveInfo = this.users[key];
+		userActiveInfo.location.current = location;
+		this.users[key] = userActiveInfo;
+	}
+	setLastLocation(key, location){
+		let userActiveInfo = this.users[key];
+		userActiveInfo.location.last = location;
+		this.users[key] = userActiveInfo;
+	}
+	getUsersInfo() {
 		return this.users;
 	}
 	getUserInfo(key) {

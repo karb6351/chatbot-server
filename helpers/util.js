@@ -1,0 +1,1 @@
+exports.storageUrlBuilder = (filename) => '/storage/' + filename

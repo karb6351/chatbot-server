@@ -1,4 +1,5 @@
 const Route = require('../../models/route');
+const util = require('../../helpers/util');
 
 exports.index = (req, res) => {
 	Route.findAll()
@@ -40,8 +41,10 @@ exports.getById = (req, res) => {
 
 exports.create = (req, res) => {
 	const { title } = req.body;
+	const { originalname } = req.file;
 	Route.create({
-		title
+		title: title,
+		thumbnail: util.storageUrlBuilder(originalname)
 	})
 		.then((route) => {
 			res.status(200).json({
@@ -60,8 +63,15 @@ exports.create = (req, res) => {
 exports.update = (req, res) => {
 	const { title } = req.body;
 	const { id } = req.params;
+	console.log(title);
+	let updateObj = {
+		title: title,
+	};
+	if (req.file) {
+		updateObj['thumbnail'] = util.storageUrlBuilder(req.file.originalname)
+	}
 	Route.update(
-		{ title },
+		updateObj,
 		{
 			where: {
 				id
@@ -102,3 +112,20 @@ exports.delete = (req, res) => {
 			});
 		});
 };
+
+exports.apiGetRoutes = (req, res) => {
+	console.log(1);
+	Route.findAll().then(routes => {
+		return res.status(200).json({
+			status: true,
+			routes: routes
+		})
+	})
+	.catch(error => {
+		console.log(error);
+		return res.status(500).json({
+			status: false,
+			message: error.message
+		})
+	})
+}

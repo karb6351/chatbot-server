@@ -14,6 +14,17 @@ const route = sequelizeService.define('route', {
           }
         }
       }
+    },
+    thumbnail: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        notNull(value) {
+          if (value == null) {
+            throw new Error('Empty thumbnail')
+          }
+        }
+      }
     }
   });
 

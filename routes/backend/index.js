@@ -1,5 +1,6 @@
 const router = require('express').Router();
 
+const upload = require('../../config/multer');
 // const authMiddleware = require('../../app/middlewares/auth');
 const authMiddleware = require('../../app/middlewares/authApi');
 
@@ -22,8 +23,8 @@ router.get('/home', homeController.index);
 // route
 router.get('/route', routeController.index);
 router.get('/route/:id', routeController.getById);
-router.post('/route/create', routeController.create);
-router.put('/route/:id', routeController.update);
+router.post('/route/create', upload.single('thumbnail'), routeController.create);
+router.put('/route/:id', upload.single('thumbnail'), routeController.update);
 router.delete('/route/:id', routeController.delete);
 
 router.get('/', (req, res) => res.redirect('/home'))
