@@ -18,86 +18,84 @@ exports.process_message = async (id, previousIntent, { input, intents, entities,
 	// .... data filtering, we should make a database api call here  .... //
 
 	let messages = [];
-	try{
+	try {
 		// return the message that IBM provide when current message is depend on previous message
-	if (previousIntent) {
-		messages = output.text;
-	} else {
-		if (intents !== []) {
-			const intent = intents[0].intent;
-			if (userActiveLogger.isJoined(id)){
-				const userInfo = userActiveLogger.getUserInfo(id);
-				const origin = userInfo['currentCoordinate'];
-				const destination = userInfo['location'].next;
-				switch (intent) {
-					case 'General_Greetings':
-						messages = [ ...messages, 'Hello. How can I help you?' ];
-						break;
-					case 'get_weather':
-						wish = entities.filter((item) => item.entity === 'sys-date').map((date) => date.value);
-						messages = [ ...messages, 'It is sunny today' ];
-						break;
-					case 'get_number_of_location_in_path':
-						wish = entities.filter((item) => item.entity === 'sys-date').map((date) => date.value);
-						// fetch number of restauarant in route from database
-						const total = 1;
-						messages = [ ...messages, ...responseMessage.numberOfRestaurant(total) ];
-						break;
-					case 'get_duration_to_next_location':
-						const { data } = await GoogleApi.distanceMatrix(origin, destination.coordinate);
-						const { distance, duration } = data.rows[0].elements[0];
-						messages = [
-							...messages,
-							...responseMessage.remainDistanceAndDuractionResponse({
-								distance: distance.text,
-								duration: duration.text
-							})
-						];
-						break;
-					case 'get_info_of_next_location':
-						const fakeRestaurant = {
-							name: '雙連台式美食',
-							culture: "taiwan",
-							dishes: "Noodles served with oil(熱拌麵)"
-						};
-						messages = [
-							...messages,
-							...responseMessage.restaurantInfoResponse(fakeRestaurant)
-						];
-						break;
-					default:
-						messages = [ ...messages, ...responseMessage.messageNotRecognizedResponse() ];
-						break;
-				}
-			}else{
-				switch(intent){
-					case 'General_Greetings':
-						messages = [ ...messages, 'Hello. How can I help you?' ];
-						break;
-					case 'get_weather':
-						wish = entities.filter((item) => item.entity === 'sys-date').map((date) => date.value);
-						messages = [ ...messages, 'It is sunny today' ];
-						break;
-					default:
-						messages = [ ...messages, ...responseMessage.messageNotRecognizedResponse() ];
-						break;
-				}
-			}
-			
+		if (previousIntent) {
+			messages = output.text;
 		} else {
-			messages = [ ...messages, ...responseMessage.messageNotRecognizedResponse() ];
+			if (intents !== []) {
+				const intent = intents[0].intent;
+				if (userActiveLogger.isJoined(id)) {
+					const userInfo = userActiveLogger.getUserInfo(id);
+					const origin = userInfo['currentCoordinate'];
+					const destination = userInfo['location'].next;
+					switch (intent) {
+						case 'General_Greetings':
+							messages = responseMessage.greetingResponse();
+							break;
+						case 'get_weather':
+							wish = entities.filter((item) => item.entity === 'sys-date').map((date) => date.value);
+							messages = [ { type: 'text', content: 'It is sunny today' } ];
+							break;
+						case 'get_number_of_location_in_path':
+							wish = entities.filter((item) => item.entity === 'sys-date').map((date) => date.value);
+							// fetch number of restauarant in route from database
+							const total = 1;
+							messages = [ ...messages, ...responseMessage.numberOfRestaurant(total) ];
+							break;
+						case 'get_duration_to_next_location':
+							const { data } = await GoogleApi.distanceMatrix(origin, destination.coordinate);
+							const { distance, duration } = data.rows[0].elements[0];
+							messages = [
+								...messages,
+								...responseMessage.remainDistanceAndDuractionResponse({
+									distance: distance.text,
+									duration: duration.text
+								})
+							];
+							break;
+						case 'get_info_of_next_location':
+							const fakeRestaurant = {
+								name: '雙連台式美食',
+								culture: 'taiwan',
+								dishes: 'Noodles served with oil(熱拌麵)'
+							};
+							messages = [ ...messages, ...responseMessage.restaurantInfoResponse(fakeRestaurant) ];
+							break;
+						case 'get_way_to_order_food':
+							messages = responseMessage.wayOfOrderFoodResponse('inside');
+							break;
+						default:
+							messages = [ ...messages, ...responseMessage.messageNotRecognizedResponse() ];
+							break;
+					}
+				} else {
+					switch (intent) {
+						case 'General_Greetings':
+							messages = [ { type: 'text', content: 'Hello. How can I help you?' } ];
+							break;
+						case 'get_weather':
+							wish = entities.filter((item) => item.entity === 'sys-date').map((date) => date.value);
+							messages = [ { type: 'text', content: 'It is sunny today' } ];
+							break;
+						default:
+							messages = [ ...messages, ...responseMessage.messageNotRecognizedResponse() ];
+							break;
+					}
+				}
+			} else {
+				messages = [ ...messages, ...responseMessage.messageNotRecognizedResponse() ];
+			}
 		}
-	}
-	userActiveLogger.addHistory(id, {
-		question: input.text,
-		answer: messages,
-		intent: intents[0].intent,
-		wishes: entities,
-		context: context
-	});
-
-	}catch(error){
-		console.error(error)
+		userActiveLogger.addHistory(id, {
+			question: input.text,
+			answer: messages,
+			intent: intents[0].intent,
+			wishes: entities,
+			context: context
+		});
+	} catch (error) {
+		console.error(error);
 		messages = [
 			...messages,
 			...responseMessage.getRemainDistanceAndDuractionResponse({

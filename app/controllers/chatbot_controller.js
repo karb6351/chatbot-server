@@ -10,6 +10,8 @@ const watsonService = new WatsonService();
 const responseMessage = require('../../resources/string');
 const messageHelper = require('../../helpers/response_message_helper');
 
+const GoogleMap = require('../../api/GoogleMap');
+
 exports.init = (req, res) => {
 	const { username, identifier } = req.body;
 	User.findOne({
@@ -57,6 +59,7 @@ exports.message = (req, res) => {
 			return SpeechHandler.process_message(id, intent, response);
 		})
 		.then((messageObj) => {
+			messageObj.messages = messageHelper.build(messageObj.messages, messageHelper.CHATBOT);
 			res.status(200).json(messageObj);
 		})
 		.catch((error) => {
@@ -82,8 +85,8 @@ exports.join = (req, res) => {
 			const fakeRestaurant = {
 				name: '雙連台式美食',
 				coordinate: {
-					latitude: 22.3125154,
-					longitude: 114.17828
+					latitude: 22.3126592,
+					longitude: 114.1785663
 				}
 			};
 			userActiveLogger.addRouteId(id, routeId);
@@ -105,15 +108,36 @@ exports.join = (req, res) => {
 };
 
 // check user location has arrived event/restuarant location
-exports.updateLocation = (req, res) => {
+exports.updateLocation = async (req, res) => {
 	const { userData: { id } } = req;
 	const { location } = req.body;
 	userActiveLogger.addCurrentCoordinate(id, location);
+	const userInfo = userActiveLogger.getUserInfo(id);
+	const nextLocation = userInfo.location['next'];
+	let messages = [];
+	let eventType = null;
+	if (nextLocation) {
+		try {
+			const { data } = await GoogleMap.distanceMatrix(location, nextLocation.coordinate);
+			const { distance } = data.rows[0].elements[0];
+			if (distance.value < 50) {
+				// check next location is restaurant or local point
+				// if (nextLocation.type === ){
+
+				// }
+				messages = messageHelper.build(responseMessage.reachRestaurantResponse());
+				eventType = 'restaurant';
+			}
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
 	res.status(200).json({
 		status: true,
 		location: location,
-		eventType: null,
-		messages: []
+		eventType: eventType,
+		messages: messages
 	});
 };
 
