@@ -14,6 +14,7 @@ const GoogleMap = require('../../api/GoogleMap');
 
 exports.init = (req, res) => {
 	const { username, identifier } = req.body;
+
 	User.findOne({
 		where: {
 			identifier

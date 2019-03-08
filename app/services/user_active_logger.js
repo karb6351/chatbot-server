@@ -17,7 +17,8 @@ class UserActiveLogger {
 				next: '',
 				last: '',
 				current: ''
-			}
+			},
+			state: null
 		};
 	}
 	addHistory(key, { question, answer, intent, wish, location, context }) {
@@ -68,6 +69,11 @@ class UserActiveLogger {
 		let userActiveInfo = this.users[key];
 		userActiveInfo.location.last = location;
 		this.users[key] = userActiveInfo;
+	}
+	setState(key, state){
+		let userActiveInfo = this.users[key];
+		userActiveInfo.state = state;
+		this.users[key] = userActiveInfo;	
 	}
 	getUsersInfo() {
 		return this.users;

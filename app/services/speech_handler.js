@@ -6,6 +6,8 @@ const GoogleApi = require('../../api/GoogleMap');
 
 const userActiveLogger = require('../services/user_active_logger');
 
+const Conversation = require('../conversations/conversation');
+
 exports.process_message = async (id, previousIntent, { input, intents, entities, output, context }) => {
 	console.log(intents);
 	// when the branch is exited, it means no further information is required, system can process the result
@@ -19,6 +21,7 @@ exports.process_message = async (id, previousIntent, { input, intents, entities,
 
 	let messages = [];
 	try {
+		const conversation = new Conversation(id);
 		// return the message that IBM provide when current message is depend on previous message
 		if (previousIntent) {
 			messages = output.text;
@@ -29,6 +32,7 @@ exports.process_message = async (id, previousIntent, { input, intents, entities,
 					const userInfo = userActiveLogger.getUserInfo(id);
 					const origin = userInfo['currentCoordinate'];
 					const destination = userInfo['location'].next;
+					conversation.processWithMessage(intent, null, input);
 					switch (intent) {
 						case 'General_Greetings':
 							messages = responseMessage.greetingResponse();
@@ -70,6 +74,7 @@ exports.process_message = async (id, previousIntent, { input, intents, entities,
 							break;
 					}
 				} else {
+					conversation.processWithMessage(intent, null, input);
 					switch (intent) {
 						case 'General_Greetings':
 							messages = [ { type: 'text', content: 'Hello. How can I help you?' } ];
