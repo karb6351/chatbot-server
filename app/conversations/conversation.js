@@ -1,35 +1,42 @@
-const userActiveLogger = require('../services/user_active_logger');
 const mapper = require('./module_intent_mapper');
+const { messageNotRecognizedResponse } = require('../../resources/string');
 
 class Conversation {
-  constructor(id){
-    this.id = id;
+  constructor(userId){
+    this.userId = userId;
   }
 
   findModuleByIntent(intent){
     const results = Object.keys(mapper).filter((item) => {
-      return mapper[item].includes(intent);
+      return mapper[item].filter(i => i.name === intent).length !== 0;
     });
     return results ? results[0] : null;
   }
 
-  processWithMessage(intent, context, message){
-    const info = userActiveLogger.getUserInfo(this.id);
-    const moduleType = this.findModuleByIntent(intent);
-    const payload = {
-      
+  async processWithMessage(intents, context, message){
+    try{
+      const moduleType = this.findModuleByIntent(intents[0].intent);
+      const payload = {}
+      if (!moduleType){
+        // use default module to handle
+        return 'test';
+      }else{
+        const subModule = new (require(`./modules/${moduleType}`))(this.userId);
+        const response = await subModule.response(intents, context, message, payload);
+        console.log(response);
+        return response;
+      }
+    }catch(error){
+      return messageNotRecognizedResponse();
     }
-    console.log();
-    if (!moduleType){
-
-    }else{
-      const subModule = new (require(`./modules/${moduleType}`))();
-      subModule.response(intent, context, payload);
-
-    }
+    
   }
 
   processWithCoordinate(context){
+
+  }
+
+  processWithContext(context){
 
   }
 }

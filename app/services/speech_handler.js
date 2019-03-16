@@ -9,7 +9,8 @@ const userActiveLogger = require('../services/user_active_logger');
 const Conversation = require('../conversations/conversation');
 
 exports.process_message = async (id, previousIntent, { input, intents, entities, output, context }) => {
-	console.log(intents);
+	// console.log(intents);
+
 	// when the branch is exited, it means no further information is required, system can process the result
 	// when the branch is not exited, it means we still required other information to process the request
 
@@ -22,92 +23,89 @@ exports.process_message = async (id, previousIntent, { input, intents, entities,
 	let messages = [];
 	try {
 		const conversation = new Conversation(id);
+		messages = await conversation.processWithMessage(previousIntent ? [ previousIntent ] : intents, null, input);
 		// return the message that IBM provide when current message is depend on previous message
-		if (previousIntent) {
-			messages = output.text;
-		} else {
-			if (intents !== []) {
-				const intent = intents[0].intent;
-				if (userActiveLogger.isJoined(id)) {
-					const userInfo = userActiveLogger.getUserInfo(id);
-					const origin = userInfo['currentCoordinate'];
-					const destination = userInfo['location'].next;
-					conversation.processWithMessage(intent, null, input);
-					switch (intent) {
-						case 'General_Greetings':
-							messages = responseMessage.greetingResponse();
-							break;
-						case 'get_weather':
-							wish = entities.filter((item) => item.entity === 'sys-date').map((date) => date.value);
-							messages = [ { type: 'text', content: 'It is sunny today' } ];
-							break;
-						case 'get_number_of_location_in_path':
-							wish = entities.filter((item) => item.entity === 'sys-date').map((date) => date.value);
-							// fetch number of restauarant in route from database
-							const total = 1;
-							messages = [ ...messages, ...responseMessage.numberOfRestaurant(total) ];
-							break;
-						case 'get_duration_to_next_location':
-							const { data } = await GoogleApi.distanceMatrix(origin, destination.coordinate);
-							const { distance, duration } = data.rows[0].elements[0];
-							messages = [
-								...messages,
-								...responseMessage.remainDistanceAndDuractionResponse({
-									distance: distance.text,
-									duration: duration.text
-								})
-							];
-							break;
-						case 'get_info_of_next_location':
-							const fakeRestaurant = {
-								name: '雙連台式美食',
-								culture: 'taiwan',
-								dishes: 'Noodles served with oil(熱拌麵)'
-							};
-							messages = [ ...messages, ...responseMessage.restaurantInfoResponse(fakeRestaurant) ];
-							break;
-						case 'get_way_to_order_food':
-							messages = responseMessage.wayOfOrderFoodResponse('inside');
-							break;
-						default:
-							messages = [ ...messages, ...responseMessage.messageNotRecognizedResponse() ];
-							break;
-					}
-				} else {
-					conversation.processWithMessage(intent, null, input);
-					switch (intent) {
-						case 'General_Greetings':
-							messages = [ { type: 'text', content: 'Hello. How can I help you?' } ];
-							break;
-						case 'get_weather':
-							wish = entities.filter((item) => item.entity === 'sys-date').map((date) => date.value);
-							messages = [ { type: 'text', content: 'It is sunny today' } ];
-							break;
-						default:
-							messages = [ ...messages, ...responseMessage.messageNotRecognizedResponse() ];
-							break;
-					}
-				}
-			} else {
-				messages = [ ...messages, ...responseMessage.messageNotRecognizedResponse() ];
-			}
-		}
+		// if (previousIntent) {
+		// 	messages = output.text;
+		// } else {
+			// const userInfo = userActiveLogger.getUserInfo(id);
+			// const origin = userInfo['currentCoordinate'];
+			// const destination = userInfo['location'].next;
+			
+
+			// if (intents !== []) {
+			// 	if (userActiveLogger.isJoined(id)) {
+			// 		const userInfo = userActiveLogger.getUserInfo(id);
+			// 		const origin = userInfo['currentCoordinate'];
+			// 		const destination = userInfo['location'].next;
+			// 		console.log(conversation.processWithMessage(intent, null, input, userActiveLogger.isJoined(id)));
+			// 		switch (intent) {
+			// 			case 'General_Greetings':
+			// 				messages = responseMessage.greetingResponse();
+			// 				break;
+			// 			case 'get_weather':
+			// 				wish = entities.filter((item) => item.entity === 'sys-date').map((date) => date.value);
+			// 				messages = [ { type: 'text', content: 'It is sunny today' } ];
+			// 				break;
+			// 			case 'get_number_of_location_in_path':
+			// 				wish = entities.filter((item) => item.entity === 'sys-date').map((date) => date.value);
+			// 				// fetch number of restauarant in route from database
+			// 				const total = 1;
+			// 				messages = [ ...messages, ...responseMessage.numberOfRestaurant(total) ];
+			// 				break;
+			// 			case 'get_duration_to_next_location':
+			// 				const { data } = await GoogleApi.distanceMatrix(origin, destination.coordinate);
+			// 				const { distance, duration } = data.rows[0].elements[0];
+			// 				messages = [
+			// 					...messages,
+			// 					...responseMessage.remainDistanceAndDuractionResponse({
+			// 						distance: distance.text,
+			// 						duration: duration.text
+			// 					})
+			// 				];
+			// 				break;
+			// 			case 'get_info_of_next_location':
+			// 				const fakeRestaurant = {
+			// 					name: '雙連台式美食',
+			// 					culture: 'taiwan',
+			// 					dishes: 'Noodles served with oil(熱拌麵)'
+			// 				};
+			// 				messages = [ ...messages, ...responseMessage.restaurantInfoResponse(fakeRestaurant) ];
+			// 				break;
+			// 			case 'get_way_to_order_food':
+			// 				messages = responseMessage.wayOfOrderFoodResponse('inside');
+			// 				break;
+			// 			default:
+			// 				messages = [ ...messages, ...responseMessage.messageNotRecognizedResponse() ];
+			// 				break;
+			// 		}
+			// 	} else {
+			// 		switch (intent) {
+			// 			case 'General_Greetings':
+			// 				messages = [ { type: 'text', content: 'Hello. How can I help you?' } ];
+			// 				break;
+			// 			case 'get_weather':
+			// 				wish = entities.filter((item) => item.entity === 'sys-date').map((date) => date.value);
+			// 				messages = [ { type: 'text', content: 'It is sunny today' } ];
+			// 				break;
+			// 			default:
+			// 				messages = [ ...messages, ...responseMessage.messageNotRecognizedResponse() ];
+			// 				break;
+			// 		}
+			// 	}
+			// } else {
+			// 	messages = [ ...messages, ...responseMessage.messageNotRecognizedResponse() ];
+			// }
+		// }
 		userActiveLogger.addHistory(id, {
 			question: input.text,
 			answer: messages,
-			intent: intents[0].intent,
+			intent: intents.length ? intents[0].intent : null,
 			wishes: entities,
 			context: context
 		});
 	} catch (error) {
 		console.error(error);
-		messages = [
-			...messages,
-			...responseMessage.getRemainDistanceAndDuractionResponse({
-				distance: distance.text,
-				duration: duration.text
-			})
-		];
 	}
 
 	const messageObj = {
