@@ -9,6 +9,24 @@ module.exports = [
         submenu: []
       },
       {
+        link: "/route",
+        icon: "fas fa-route",
+        label: "Route",
+        submenu: []
+      },
+      {
+        link: "/event",
+        icon: "far fa-calendar-alt",
+        label: "Event",
+        submenu: []
+      },
+      {
+        link: "/restaurant",
+        icon: "fas fa-utensils",
+        label: "Restaurant",
+        submenu: []
+      },
+      {
         link: "#",
         icon: "fa fa-table",
         label: "Links",

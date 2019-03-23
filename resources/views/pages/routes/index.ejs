@@ -1,0 +1,29 @@
+<% layout('layout') -%>
+
+<div class="">
+  <div class="main-container">
+      <%- include('../../include/create_button', {href: '/route/create'}) %>
+  </div>
+  <div class="main-container">
+    <table class="table is-striped is-fullwidth ">
+        <thead>
+            <th>Title</th>
+            <th>Thumbnail</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+          <% routes.map(route => { %>
+            <tr>
+                <td  width="40%"><%= route.title %></td>
+                <td width="20%"><%- include('../../include/img_displayer', {obj: route, key: 'thumbnail', index: 0}) %></td>
+                <td>  
+                  <a href="/route/<%= route.id %>" class="button is-primary"><i class="fas fa-info-circle m-right-5"></i>Info</a>
+                  <a href="/route/<%= route.id %>/edit" class="button is-info"><i class="fas fa-edit m-right-5"></i>Edit</a>
+                  <a href="#" data-href="route/<%= route.id %>" class="delete-button button is-danger"><i class="fas fa-trash-alt m-right-5"></i>Delete</a>
+                </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+  </div>
+</div>

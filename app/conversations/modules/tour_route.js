@@ -61,11 +61,11 @@ module.exports = class TourRoute extends BaseModule {
 						case 'Bot_Control_Reject_Response':
 							messages = [ 'you said yes' ];
 							// update state
-							userActiveLogger.setState(this.userId, null);
+							userActiveLogger.setState(this.userId, 0);
 						case 'Bot_Control_Approve_Response':
 							messages = [ 'you said no' ];
 							// update state
-							userActiveLogger.setState(this.userId, null);
+							userActiveLogger.setState(this.userId, 0);
 						default:
 						//get previous question and answer again, no need to update state
 					}

@@ -1,41 +1,33 @@
-// const mongoose = require('mongoose')
+// 'use strict';
+const sequelizeService = require('../app/services/sequelize_service');
 
-// const CultureSchema = mongoose.Schema({
-//     _id: mongoose.Schema.Types.ObjectId,
-//     name: {
-//         type: String,
-//         require: true
-//     },
-//     description: {
-//         type: String,
-//         require: true
-//     }
-// })
+const restaurant = require('./restaurant');
+const food = require('./food');
 
-// module.exports = mongoose.Model('Culture', CultureSchema)
+class Culture extends Model {}
+Culture.init({
+  tableName: 'cultures',
+  timestamps: true,
+  name: DataTypes.STRING,
+  description: DataTypes.TEXT
+}, {
+  sequelizeService
+})
 
+Culture.belongsToMany(restaurant, { through: 'CultureRestaurant', foreignKey: "culture_id"});
+Culture.belongsToMany(food, { through: 'CultureFood', foreignKey: "culture_id"});
 
-const sequelize = require('./services/sequelize_service.js')
-const Sequelize = require('Sequelize')
+module.exports = Culture;
 
-const Culture = sequelize.define(
-    'cultures',
-    {
-        id: {
-            type: Sequelize.INTEGER,
-            primaryKey: true,
-            autoIncrement: true
-        },
-        name: {
-            type: Sequelize.STRING,
-            allowNull: false
-        },
-        description: {
-            type: Sequelize.STRING,
-            allowNull: false
-        }
-    },
-    { underscored: true }
-)
-
-module.exports = Culture
+// module.exports = (sequelize, DataTypes) => {
+//   const Culture = sequelize.define('Culture', {
+//     name: DataTypes.STRING,
+//     description: DataTypes.TEXT
+//   }, {});
+//   Culture.associate = function(models) {
+//     // associations can be defined here
+//     models.belongsToMany(restaurant, { through: 'CultureRestaurant', foreignKey: "culture_id"});
+//     models.belongsToMany(food, { through: 'CultureFood', foreignKey: "culture_id"});
+//   };
+//   return Culture;
+// };

@@ -1,16 +1,62 @@
 const Route = require('../../models/route');
 const util = require('../../helpers/util');
 
-exports.index = (req, res) => {
-	Route.findAll()
-		.then((routes) => {
-			res.status(200).json({
-				routes: routes,
-        status: true
-			});
+exports.index = async (req, res) => {
+	try {
+		const routes = await Route.findAll();
+		res.render('pages/routes/index', {
+			routes: routes
+		});
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({
+			status: false,
+			message: error.message
+		});
+	}
+};
+
+exports.getById = async (req, res) => {
+	const { id } = req.params;
+	try {
+		const route = await Route.find({
+			where: {
+				id
+			}
+		});
+		res.render('pages/routes/info', {
+			route: route
+		});
+	} catch (error) {
+		res.status(500).json({
+			status: false,
+			message: error.message
+		});
+	}
+};
+
+exports.create = (req, res) => {
+	res.render('pages/routes/create', {
+		route: null
+	});
+};
+
+exports.save = (req, res) => {
+	const { title, thumbnail } = req.body;
+	// const { originalname } = req.file;
+	Route.create({
+		title: title,
+		// thumbnail: util.storageUrlBuilder(originalname)
+		thumbnail: thumbnail
+	})
+		.then((route) => {
+			// res.status(200).json({
+			// 	route: route,
+			//   status: true
+			// });
+			res.redirect('/route');
 		})
 		.catch((error) => {
-			console.error(error);
 			res.status(500).json({
 				status: false,
 				message: error.message
@@ -18,7 +64,7 @@ exports.index = (req, res) => {
 		});
 };
 
-exports.getById = (req, res) => {
+exports.edit = (req, res) => {
 	const { id } = req.params;
 	Route.find({
 		where: {
@@ -26,69 +72,46 @@ exports.getById = (req, res) => {
 		}
 	})
 		.then((route) => {
-			res.status(200).json({
-				route: route,
-        status: true
+			res.render('pages/routes/update', {
+				route: route
 			});
 		})
 		.catch((error) => {
-			res.status(500).json({
-				status: false,
-				message: error.message
-			});
-		});
-};
-
-exports.create = (req, res) => {
-	const { title } = req.body;
-	const { originalname } = req.file;
-	Route.create({
-		title: title,
-		thumbnail: util.storageUrlBuilder(originalname)
-	})
-		.then((route) => {
-			res.status(200).json({
-				route: route,
-        status: true
-			});
-		})
-		.catch((error) => {
-			res.status(500).json({
-				status: false,
-				message: error.message
-			});
+			console.log(error);
+			res.redirect('/route');
 		});
 };
 
 exports.update = (req, res) => {
-	const { title } = req.body;
+	const { title, thumbnail } = req.body;
 	const { id } = req.params;
-	console.log(title);
 	let updateObj = {
 		title: title,
+		thumbnail: thumbnail
 	};
-	if (req.file) {
-		updateObj['thumbnail'] = util.storageUrlBuilder(req.file.originalname)
-	}
-	Route.update(
-		updateObj,
-		{
-			where: {
-				id
-			}
+	console.log(updateObj);
+	// if (req.file) {
+	// 	updateObj['thumbnail'] = util.storageUrlBuilder(req.file.originalname)
+	// }
+	Route.update(updateObj, {
+		where: {
+			id
 		}
-	)
+	})
 		.then((route) => {
-			res.status(200).json({
-        route: route,
-        status: true
-			});
+			// res.status(200).json({
+			//   route: route,
+			//   status: true
+			// });
+			res.redirect('/route');
 		})
 		.catch((error) => {
-			res.status(500).json({
-				status: false,
-				message: error.message
-			});
+			console.log(error);
+			// res.status(500).json({
+			// 	status: false,
+			// 	message: error.message
+			// });
+			res.render('/route');
 		});
 };
 
@@ -102,7 +125,7 @@ exports.delete = (req, res) => {
 		.then((route) => {
 			res.status(200).json({
 				route: route,
-        status: true
+				status: true
 			});
 		})
 		.catch((error) => {
@@ -115,17 +138,18 @@ exports.delete = (req, res) => {
 
 exports.apiGetRoutes = (req, res) => {
 	console.log(1);
-	Route.findAll().then(routes => {
-		return res.status(200).json({
-			status: true,
-			routes: routes
+	Route.findAll()
+		.then((routes) => {
+			return res.status(200).json({
+				status: true,
+				routes: routes
+			});
 		})
-	})
-	.catch(error => {
-		console.log(error);
-		return res.status(500).json({
-			status: false,
-			message: error.message
-		})
-	})
-}
+		.catch((error) => {
+			console.log(error);
+			return res.status(500).json({
+				status: false,
+				message: error.message
+			});
+		});
+};

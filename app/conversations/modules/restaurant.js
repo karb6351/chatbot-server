@@ -6,7 +6,7 @@ module.exports = class Restaurant extends BaseModule {
 	intentType() {
 		return [
 			{
-				naem: 'get_way_to_order_food',
+				name: 'get_way_to_order_food',
 				responseAfterJoin: true
 			}
 		];

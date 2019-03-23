@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <title>Admin Panel</title>
-  
-  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 
-  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="/css/app.css">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
 <body>
   <% if (session.username){ %>
@@ -18,7 +19,7 @@
         <div class="column is-one-fifths is-narrow-mobile is-fullheight is-hidden-mobile">
           <%- include('./include/menu.ejs') %>
         </div>
-        <div class="column is-four-fifths">
+        <div class="column is-four-fifths" id="app">
           <%- body %>
         </div>
       </div>
@@ -28,5 +29,6 @@
   <% } %>
   <%- include('./include/notification.ejs') %>
 </body>
-<script src="js/bundle.js"></script>
+<!-- <script src="/js/app.js"></script> -->
+<script src="/js/bundle.js"></script>
 </html>

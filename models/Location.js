@@ -1,11 +1,6 @@
 const Sequelize = require('sequelize');
 const sequelizeService = require('../app/services/sequelize_service');
 
-const route = require('./route');
-// const restaurant = require('./restaurant');
-// const event = require('./event');
-// const generalLocalKnowledge = require('./generalLocalKnowledge');
-
 const location = sequelizeService.define('location', {
     location: {
       type: Sequelize.GEOMETRY,
@@ -31,9 +26,6 @@ const location = sequelizeService.define('location', {
     }
   });
 
-  // Location.hasOne(restaurant);
-  // Location.hasOne(event);
-  // Location.hasOne(generalLocalKnowledge);
 
-  
+
   module.exports = location

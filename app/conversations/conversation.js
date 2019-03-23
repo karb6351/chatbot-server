@@ -23,20 +23,18 @@ class Conversation {
       }else{
         const subModule = new (require(`./modules/${moduleType}`))(this.userId);
         const response = await subModule.response(intents, context, message, payload);
-        console.log(response);
         return response;
       }
     }catch(error){
       return messageNotRecognizedResponse();
     }
-    
   }
 
-  processWithCoordinate(context){
+  async processWithCoordinate(context){
 
   }
 
-  processWithContext(context){
+  async processWithContext(context){
 
   }
 }

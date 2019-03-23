@@ -16,6 +16,8 @@ const backendRoutes = require('./routes/backend/index');
 
 const startSocket = require('./socket');
 
+const methodOverride = require('method-override')
+
 // webpack setup
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
@@ -52,6 +54,17 @@ app.options('*', cors());
 // form body setup
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(methodOverride(function (req, res) {
+	console.log(typeof req.body === 'object', '_method' in req.body, req.body);
+  if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+    // look in urlencoded POST bodies and delete it
+    var method = req.body._method
+		delete req.body._method
+		console.log(method);
+    return method
+  }
+}))
+
 
 // view engine setup
 // app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'app', layoutsDir: __dirname + '/resources/views/layouts/', partialsDir: __dirname + '/resources/views/partials/' }));
