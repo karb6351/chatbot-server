@@ -1,0 +1,6 @@
+<div class="field">
+    <label class="label"><%- key.charAt(0).toUpperCase() + key.slice(1);  %></label>
+    <div class="control">
+      <textarea class="textarea" type="text" name="<%= key %>"><%= typeof obj !== 'undefined' && obj ? obj[key] : '' %></textarea>
+    </div>
+  </div>

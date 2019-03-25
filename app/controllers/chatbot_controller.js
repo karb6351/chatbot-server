@@ -12,100 +12,96 @@ const messageHelper = require('../../helpers/response_message_helper');
 
 const GoogleMap = require('../../api/GoogleMap');
 
-exports.init = (req, res) => {
+exports.init = async (req, res) => {
 	const { username, identifier } = req.body;
-
-	User.findOne({
-		where: {
-			identifier
+	try{
+		const user = await User.findOne({where: {identifier}});
+		if (!user) {
+			user = await User.create({
+				username: username ? username : 'guest',
+				identifier: identifier
+			});
 		}
-	})
-		.then((user) => {
-			if (!user) {
-				return User.create({
-					username: username ? username : 'guest',
-					identifier: identifier
-				});
-			} else {
-				return new Promise((resolve, reject) => {
-					resolve(user);
-				});
-			}
-		})
-		.then((user) => {
-			userActiveLogger.createUserInfo(identifier, user);
-			const jwt = tokenHelper.generateToken(identifier);
-			res.status(200).json({
-				status: true,
-				identifier: identifier,
-				jwt: jwt,
-				messages: messageHelper.build(responseMessage.initResponse(), messageHelper.CHATBOT)
-			});
-		})
-		.catch((error) => {
-			console.log(error);
-			res.status(500).json({
-				status: false,
-				message: error.message
-			});
+		userActiveLogger.createUserInfo(identifier, user);
+		const jwt = tokenHelper.generateToken(identifier);
+		res.status(200).json({
+			status: true,
+			identifier: identifier,
+			jwt: jwt,
+			messages: messageHelper.build(responseMessage.initResponse(), messageHelper.CHATBOT)
 		});
+	}catch(error){
+		console.log(error);
+		res.status(500).json({
+			status: false,
+			message: error.message
+		});
+	}
 };
 
-exports.message = (req, res) => {
+exports.message = async (req, res) => {
 	const { userData: { id } } = req;
 	const { message, intent, context } = req.body;
-	watsonService
-		.message(message, context)
-		.then((response) => {
-			return SpeechHandler.process_message(id, intent, response);
-		})
-		.then((messageObj) => {
-			messageObj.messages = messageHelper.build(messageObj.messages, messageHelper.CHATBOT);
-			res.status(200).json(messageObj);
-		})
-		.catch((error) => {
-			console.error(error);
-			res.status(404).json(error);
-		});
+	try{
+		const response = await watsonService.message(message, context);
+		let messageObj = await SpeechHandler.process_message(id, intent, response);
+		messageObj.messages = messageHelper.build(messageObj.messages, messageHelper.CHATBOT); 
+		res.status(200).json(messageObj);
+	}catch(error){
+		console.error(error);
+		res.status(404).json(error);
+	}
 };
 
-exports.join = (req, res) => {
+exports.join = async (req, res) => {
 	const { userData: { id } } = req;
 	const { routeId } = req.body;
 	// find first restautran of the route;
-	Route.findOne({
-		where: {
-			id: routeId
-		}
-		// include: [{
-		//     model: Restaurant,
-		//     where: { route_id : Sequelize.col('Route.id') }
-		// }]
-	})
-		.then((route) => {
-			const fakeRestaurant = {
-				name: '雙連台式美食',
-				coordinate: {
-					latitude: 22.3126592,
-					longitude: 114.1785663
-				}
-			};
-			userActiveLogger.addRouteId(id, routeId);
-			const messages = messageHelper.build(responseMessage.joinRouteResponse(route), messageHelper.CHATBOT);
-			userActiveLogger.addCurrentAction(id, userActiveLogger.ACTION_WALK);
-			userActiveLogger.setNextLocation(id, fakeRestaurant);
-			res.status(200).json({
-				messages: messages,
-				restaurant: fakeRestaurant
-			});
-		})
-		.catch((error) => {
-			console.log(error);
-			res.status(500).json({
-				status: false,
-				message: error.message
-			});
+	try{
+		const route = await Route.findOne({
+			where: {
+				id: routeId
+			},
+			// include: [{
+			//     model: Event,
+			//     where: { route_id : Sequelize.col('Route.id') }
+			// }]
 		});
+		console.log(route);
+		const fakeRestaurant = {
+			name: '雙連台式美食',
+			coordinate: {
+				latitude: 22.3126592,
+				longitude: 114.1785663
+			}
+		};
+
+		// startpoint = {
+		// 	coordinate: {
+		// 		latitude: 22.316201,
+		// 		longitude: 114.180331
+		// 	}
+		// }
+		
+		userActiveLogger.addRouteId(id, routeId);
+		// userActiveLogger.setCurrentEventId(id, events[0].id);
+		userActiveLogger.setCurrentEventId(id, 1); // dummy data
+		userActiveLogger.addCurrentAction(id, userActiveLogger.ACTION_WALK);
+		userActiveLogger.setNextLocation(id, fakeRestaurant);
+
+		const messages = messageHelper.build(responseMessage.joinRouteResponse(route), messageHelper.CHATBOT);
+		res.status(200).json({
+			messages: messages,
+			restaurant: fakeRestaurant
+		});
+
+	}catch(error){
+		console.log(error);
+		res.status(500).json({
+			status: false,
+			message: error.message
+		});
+	}
 };
 
 // check user location has arrived event/restuarant location
@@ -116,29 +112,28 @@ exports.updateLocation = async (req, res) => {
 	const userInfo = userActiveLogger.getUserInfo(id);
 	const nextLocation = userInfo.location['next'];
 	let messages = [];
-	let eventType = null;
+	let hasEvent = false;
 	if (nextLocation) {
 		try {
 			const { data } = await GoogleMap.distanceMatrix(location, nextLocation.coordinate);
 			const { distance } = data.rows[0].elements[0];
 			if (distance.value < 50) {
-				// check next location is restaurant or local point
-				// if (nextLocation.type === ){
-
-				// }
-				messages = messageHelper.build(responseMessage.reachRestaurantResponse());
-				eventType = 'restaurant';
+				const messageObj = await SpeechHandler.process_location(id, null, null);
+				messages = messageHelper.build(messageObj.messages, messageHelper.CHATBOT); 
+				hasEvent = true;
 			}
 		} catch (error) {
 			console.error(error);
 		}
 	}
 
+	console.log(messages, hasEvent);
+
 	res.status(200).json({
 		status: true,
 		location: location,
-		eventType: eventType,
-		messages: messages
+		messages: messages,
+		hasEvent: hasEvent 
 	});
 };
 
@@ -152,3 +147,4 @@ exports.test = (req, res) => {
 		console.log(user);
 	});
 };
+;

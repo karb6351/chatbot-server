@@ -114,8 +114,8 @@ exports.reachRestaurantResponse = (restaurant) => [
 	},
 	{
 		type: 'image',
-		// content: `http://192.168.2.182:8000/storage/test4.jpg`,
-		content: `http://192.168.240.131:8000/storage/test4.jpg`,
+		content: `http://192.168.2.182:8000/storage/test4.jpg`,
+		// content: `http://192.168.240.131:8000/storage/test4.jpg`,
 	}
 ];
 

@@ -26,6 +26,4 @@ const location = sequelizeService.define('location', {
     }
   });
 
-
-
   module.exports = location

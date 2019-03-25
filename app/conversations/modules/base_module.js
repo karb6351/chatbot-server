@@ -3,14 +3,24 @@ const UserActiveLogger = require('../../services/user_active_logger');
 
 module.exports = class BaseModule {
 	constructor(userId){
-		this.userId = userId;
+		this.userId = userId;	
+		this.INTENT = 0;
+		this.CONTEXT = 1;
+		this.COORDINATE = 2;
 	}
 
-	async response(intents, context, message, payload) {
+	async response(intents, context, message, payload, type) {
 		try {
-			const intent = intents[0].intent;
-			if (!this.validUserStatusAndIntent(intent, UserActiveLogger.isJoined(this.userId))) throw Error();
-			return await this.generateReponse(intent, context, payload);
+			if (type === this.INTENT){
+				const intent = intents[0].intent;
+				if (!this.validUserStatusAndIntent(intent, UserActiveLogger.isJoined(this.userId))) throw Error();
+				return await this.generateReponseWithIntent(intent, context, payload);
+			}else if (type === this.CONTEXT){
+				return await this.generateReponseWithContext();
+			}else {
+				return await this.generateReponseWithCoordinate();
+			}
+			
 		} catch (error) {
 			console.log(error.message);
 			return messageNotRecognizedResponse();
@@ -25,6 +35,8 @@ module.exports = class BaseModule {
 		}
 	}
 	// "abstract" method
-	async generateReponse(intent, content, payload) {}
+	async generateReponseWithIntent(intent, content, payload) {}
+	async generateReponseWithContext() {}
+	async generateReponseWithCoordinate() {}
 	intentType(){}
 };

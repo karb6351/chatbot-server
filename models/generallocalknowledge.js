@@ -1,13 +1,10 @@
-'use strict';
-const event = require('./event');
-module.exports = (sequelize, DataTypes) => {
-  const GeneralLocalKnowledge = sequelize.define('GeneralLocalKnowledge', {
-    reminder: DataTypes.STRING,
-    event_id: DataTypes.INTEGER
-  }, {});
-  GeneralLocalKnowledge.associate = function(models) {
-    // associations can be defined here
-    models.belongs(event);
-  };
-  return GeneralLocalKNowledge;
-};
+const Sequelize = require('sequelize');
+const sequelize = require('../app/services/sequelize_service');
+
+class GeneralLocalKnowledge extends Sequelize.Model {}
+GeneralLocalKnowledge.init({
+  reminder: Sequelize.STRING,
+  location: Sequelize.GEOMETRY
+},{ sequelize })
+
+module.exports = GeneralLocalKnowledge;

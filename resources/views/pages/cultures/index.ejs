@@ -1,0 +1,30 @@
+<% layout('layout') -%>
+
+<div class="">
+  <div class="main-container">
+      <%- include('../../include/create_button', {href: '/culture/create'}) %>
+  </div>
+  <div class="main-container">
+    <table class="table is-striped is-fullwidth ">
+        <thead>
+            <th>Name</th>
+            <th>description</th>
+            <th>Color</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+          <% cultures.map(culture => { %>
+            <tr>
+                <td><%= culture.name %></td>
+                <td><%= culture.description %></td>
+                <td><div class="color" style="background-color: <%= culture.color %>;"></div></td>
+                <td>  
+                  <a href="/culture/<%= culture.id %>/edit" class="button is-info"><i class="fas fa-edit m-right-5"></i>Edit</a>
+                  <a href="#" data-href="culture/<%= culture.id %>" class="delete-button button is-danger"><i class="fas fa-trash-alt m-right-5"></i>Delete</a>
+                </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+  </div>
+</div>

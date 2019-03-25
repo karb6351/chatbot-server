@@ -1,0 +1,11 @@
+<% layout('layout') -%>
+<div class="main-container">
+    <a href="/culture" class="button is-info"><i class="fas fa-arrow-circle-left m-right-5"></i>Back</a>
+</div>
+<form action="/culture/<%= culture.id %>" method="post">
+  <input type="hidden" name="_method" value="put" />
+  <%- include('../../include/form_field/input', {obj: culture, key: 'name'}) %>
+  <%- include('../../include/form_field/textarea', {obj: culture, key: 'description'}) %>
+  <%- include('../../include/form_field/color', {obj: culture, key: 'color'}) %>
+  <button class="button is-primary">Submit</button>
+</form>

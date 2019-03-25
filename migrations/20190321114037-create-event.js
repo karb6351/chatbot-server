@@ -19,7 +19,10 @@ module.exports = {
       order: {
         type: Sequelize.INTEGER
       },
-      location_id:{
+      route_id:{
+        type: Sequelize.INTEGER
+      },
+      model_id:{
         type: Sequelize.INTEGER
       },
       type: {
@@ -33,6 +36,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
+    }, {
+      charset: 'utf8',
+      collate: 'utf8_unicode_ci'
     });
   },
   down: (queryInterface, Sequelize) => {

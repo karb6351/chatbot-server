@@ -1,5 +1,4 @@
 const Route = require('../../models/route');
-const util = require('../../helpers/util');
 
 exports.index = async (req, res) => {
 	try {
@@ -19,7 +18,7 @@ exports.index = async (req, res) => {
 exports.getById = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const route = await Route.find({
+		const route = await Route.findOne({
 			where: {
 				id
 			}
@@ -28,11 +27,9 @@ exports.getById = async (req, res) => {
 			route: route
 		});
 	} catch (error) {
-		res.status(500).json({
-			status: false,
-			message: error.message
-		});
+		console.log(error);
 	}
+	res.redirect('/route')
 };
 
 exports.create = (req, res) => {
@@ -41,32 +38,22 @@ exports.create = (req, res) => {
 	});
 };
 
-exports.save = (req, res) => {
+exports.save = async (req, res) => {
 	const { title, thumbnail } = req.body;
-	// const { originalname } = req.file;
-	Route.create({
-		title: title,
-		// thumbnail: util.storageUrlBuilder(originalname)
-		thumbnail: thumbnail
-	})
-		.then((route) => {
-			// res.status(200).json({
-			// 	route: route,
-			//   status: true
-			// });
-			res.redirect('/route');
-		})
-		.catch((error) => {
-			res.status(500).json({
-				status: false,
-				message: error.message
-			});
+	try {
+		const route = await Route.create({
+			title: title,
+			thumbnail: thumbnail
 		});
+	} catch (error) {
+		console.log(error);
+	}
+	res.redirect('/route');
 };
 
 exports.edit = (req, res) => {
 	const { id } = req.params;
-	Route.find({
+	Route.findOne({
 		where: {
 			id
 		}
@@ -89,28 +76,16 @@ exports.update = (req, res) => {
 		title: title,
 		thumbnail: thumbnail
 	};
-	console.log(updateObj);
-	// if (req.file) {
-	// 	updateObj['thumbnail'] = util.storageUrlBuilder(req.file.originalname)
-	// }
 	Route.update(updateObj, {
 		where: {
 			id
 		}
 	})
 		.then((route) => {
-			// res.status(200).json({
-			//   route: route,
-			//   status: true
-			// });
 			res.redirect('/route');
 		})
 		.catch((error) => {
 			console.log(error);
-			// res.status(500).json({
-			// 	status: false,
-			// 	message: error.message
-			// });
 			res.render('/route');
 		});
 };

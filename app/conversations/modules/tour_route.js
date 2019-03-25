@@ -22,7 +22,7 @@ module.exports = class TourRoute extends BaseModule {
 		];
 	}
 
-	async generateReponse(intent, content, payload) {
+	async generateReponseWithIntent(intent, content, payload) {
 		switch (intent) {
 			case 'get_number_of_location_in_path':
 				// fetch number of restauarant in route from database

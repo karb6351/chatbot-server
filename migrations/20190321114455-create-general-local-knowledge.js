@@ -12,7 +12,10 @@ module.exports = {
         type: Sequelize.STRING
       },
       event_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.TEXT
+      },
+      location: {
+        type: Sequelize.GEOMETRY
       },
       createdAt: {
         allowNull: false,
@@ -22,6 +25,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
+    }, {
+      charset: 'utf8',
+      collate: 'utf8_unicode_ci'
     });
   },
   down: (queryInterface, Sequelize) => {

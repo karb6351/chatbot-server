@@ -1,33 +1,18 @@
 // 'use strict';
-const sequelizeService = require('../app/services/sequelize_service');
+const Sequelize = require('sequelize');
+const sequelize = require('../app/services/sequelize_service');
 
-const restaurant = require('./restaurant');
-const food = require('./food');
+const Restaurant = require('./restaurant');
+const Food = require('./food');
 
-class Culture extends Model {}
+class Culture extends Sequelize.Model{}
 Culture.init({
-  tableName: 'cultures',
-  timestamps: true,
-  name: DataTypes.STRING,
-  description: DataTypes.TEXT
-}, {
-  sequelizeService
-})
+  name: Sequelize.STRING,
+  description: Sequelize.TEXT,
+  color: Sequelize.STRING
+},{ sequelize })
 
-Culture.belongsToMany(restaurant, { through: 'CultureRestaurant', foreignKey: "culture_id"});
-Culture.belongsToMany(food, { through: 'CultureFood', foreignKey: "culture_id"});
+// Culture.belongsToMany(Restaurant, { through: 'CultureRestaurant', foreignKey: "culture_id"});
+// Culture.belongsToMany(Food, { through: 'CultureFood', foreignKey: "culture_id"});
 
 module.exports = Culture;
-
-// module.exports = (sequelize, DataTypes) => {
-//   const Culture = sequelize.define('Culture', {
-//     name: DataTypes.STRING,
-//     description: DataTypes.TEXT
-//   }, {});
-//   Culture.associate = function(models) {
-//     // associations can be defined here
-//     models.belongsToMany(restaurant, { through: 'CultureRestaurant', foreignKey: "culture_id"});
-//     models.belongsToMany(food, { through: 'CultureFood', foreignKey: "culture_id"});
-//   };
-//   return Culture;
-// };

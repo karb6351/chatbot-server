@@ -11,7 +11,7 @@ module.exports = class General extends BaseModule {
 			}
 		];
 	}
-	async generateReponse(intent, content, payload) {
+	async generateReponseWithIntent(intent, content, payload) {
 		switch (intent) {
       case 'General_Greetings':
         return responseMessage.greetingResponse();

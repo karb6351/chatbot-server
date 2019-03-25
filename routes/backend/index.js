@@ -8,6 +8,8 @@ const authenticationController = require("../../app/controllers/authentication_c
 const fileController = require('../../app/controllers/file_controller');
 const homeController = require('../../app/controllers/home_controller');
 const routeController = require('../../app/controllers/route_controller');
+const cultureController = require('../../app/controllers/culture_controller');
+const foodController = require('../../app/controllers/food_controller');
 const eventController = require('../../app/controllers/event_controller');
 const restaurantController = require('../../app/controllers/restaurant_controller');
 
@@ -26,6 +28,14 @@ router.get('/home', homeController.index);
 // file upload api
 router.post('/file/upload',upload.single('file'), fileController.upload);
 
+// culture
+router.get('/culture', cultureController.index);
+router.get('/culture/create', cultureController.create);
+router.post('/culture', cultureController.save);
+router.get('/culture/:id/edit', cultureController.edit);
+router.put('/culture/:id',  cultureController.update);
+router.delete('/culture/:id', cultureController.delete);
+
 // route
 router.get('/route', routeController.index);
 router.get('/route/create', routeController.create);
@@ -34,6 +44,15 @@ router.get('/route/:id/edit', routeController.edit);
 router.get('/route/:id', routeController.getById);
 router.put('/route/:id',  routeController.update);
 router.delete('/route/:id', routeController.delete);
+
+// food
+router.get('/food', foodController.index);
+router.get('/food/create', foodController.create);
+router.post('/food', foodController.save);
+router.get('/food/:id/edit', foodController.edit);
+router.get('/food/:id', foodController.getById);
+router.put('/food/:id',  foodController.update);
+router.delete('/food/:id', foodController.delete);
 
 // event
 // router.get('/event', eventController.index);

@@ -4,10 +4,13 @@ const util = require('../../helpers/util');
 exports.index = (req, res) => {
 	Restaurant.findAll()
 		.then((restaurants) => {
-			res.status(200).json({
+			// res.status(200).json({
+			// 	restaurants: restaurants,
+			// 	status: true
+			// });
+			res.render('/pages/restaurants/index',{
 				restaurants: restaurants,
-				status: true
-			});
+			})
 		})
 		.catch((error) => {
 			console.error(error);
@@ -40,7 +43,7 @@ exports.getById = (req, res) => {
 };
 
 exports.create = (req, res) => {
-	const { name, description, photos, event_id } = req.body;
+	const { name, description, photos, event_id, food_id, culture_id } = req.body;
 	Restaurant.create({ name, description, photos, event_id })
 		.then((restaurant) => {
 			res.status(200).json({

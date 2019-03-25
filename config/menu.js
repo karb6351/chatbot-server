@@ -27,6 +27,18 @@ module.exports = [
         submenu: []
       },
       {
+        link: "/food",
+        icon: "fas fa-cocktail",
+        label: "Food",
+        submenu: []
+      },
+      {
+        link: "/culture",
+        icon: "fas fa-tags",
+        label: "Culture",
+        submenu: []
+      },
+      {
         link: "#",
         icon: "fa fa-table",
         label: "Links",

@@ -1,0 +1,15 @@
+<% layout('layout') -%>
+<div class="main-container">
+    <a href="/food" class="button is-info"><i class="fas fa-arrow-circle-left m-right-5"></i>Back</a>
+</div>
+<!-- <div class="card">
+  <div class="card-content"> -->
+    <form action="/food/<%= food.id %>" method="post">
+      <input type="hidden" name="_method" value="put" />
+      <%- include('../../include/form_field/input', {obj: food, key: 'name'}) %>
+      <%- include('../../include/form_field/textarea', {obj: food, key: 'description'}) %>
+      <%- include('../../include/form_field/dropzone', {obj: food, key: 'photos', max: 10}) %>
+      <button class="button is-primary">Submit</button>
+    </form>
+  <!-- </div>
+</div> -->

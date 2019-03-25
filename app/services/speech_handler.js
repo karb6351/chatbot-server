@@ -145,3 +145,28 @@ exports.process_message = async (id, previousIntent, { input, intents, entities,
 	// 	};
 	// }
 };
+
+exports.process_location = async (id, previousIntent, context) => {
+	let messages = [];
+	try {
+		const conversation = new Conversation(id);
+		messages = await conversation.processWithCoordinate(null);
+		userActiveLogger.addHistory(id, {
+			question: null,
+			answer: messages,
+			intent: null,
+			wishes: null,
+			context: context
+		});
+	} catch (error) {
+		console.error(error);
+	}
+
+	const messageObj = {
+		messages: messages,
+		context: context,
+		intent: null
+	};
+	console.log(messageObj);
+	return messageObj;
+}

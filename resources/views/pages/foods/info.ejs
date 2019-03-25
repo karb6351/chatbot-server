@@ -1,0 +1,46 @@
+<% layout('layout') -%>
+<div class="main-container">
+    <a href="/food" class="button is-info"><i class="fas fa-arrow-circle-left m-right-5"></i>Back</a>
+</div>
+
+<div class="main-container">
+    <div class="columns">
+      <div class="column is-5">
+          <div class="card m-bottom-20">
+              <header class="card-header">
+                <p class="card-header-title">Basic Information</p>
+              </header>
+            <div class="card-content">
+              <div class="info-display-row">
+                <span>Name</span>
+                <span><%= food.name %></span>
+              </div>
+              <div class="info-display-row">
+                <span>Description</span>
+                <span><%= food.description %></span>
+              </div>  
+            </div>
+          </div>
+          <div class="card">
+              <header class="card-header">
+                <p class="card-header-title">Related Restaurant</p>
+              </header>
+            <div class="card-content">
+               
+            </div>
+          </div>
+      </div>
+      <div class="column is-7">
+          <div class="card">
+              <header class="card-header">
+                <p class="card-header-title">Gallery</p>
+              </header>
+            <div class="card-content">
+                <gallery photos='<%= food.photos %>'/>     
+            </div>
+          </div>
+          
+      </div>
+    </div>
+    
+</div>

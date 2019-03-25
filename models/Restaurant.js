@@ -1,32 +1,12 @@
-// 'use strict';
-
-const culture = require('./culture');
-const food = require('./food');
-const event = require('./event');
-
-// module.exports = (sequelize, DataTypes) => {
-//   const Restaurant = sequelize.define('Restaurant', {
-//     name: DataTypes.STRING,
-//     description: DataTypes.TEXT,
-//     photos: DataTypes.TEXT,
-//     event_id: DataTypes.INTEGER,
-//   }, {});
-//   Restaurant.associate = function(models) {
-//     // associations can be defined here
-//     models.belongsToMany(culture, { through: 'CultureRestaurant', foreignKey: "restaurant_id"});
-//     models.hasMany(food, { as: 'food', foreignKey: 'restaurant_id'});
-//     models.belongsTo(event);
-//   };
-//   return Restaurant;
-// };
+const Culture = require('./culture');
+const Food = require('./food');
 
 const Sequelize = require('sequelize');
-const sequelizeService = require('../app/services/sequelize_service');
+const sequelize = require('../app/services/sequelize_service');
 
-const location = require('./location');
-
-const Restaurant = sequelizeService.define('restaurant', {
-	name: {
+class Restaurant extends Sequelize.Model{}
+Restaurant.init({
+  name: {
 		type: Sequelize.STRING,
 		allowNull: false,
 		validate: {
@@ -59,21 +39,20 @@ const Restaurant = sequelizeService.define('restaurant', {
 			}
 		}
 	},
-	event_id: {
-		type: Sequelize.INTEGER,
-		allowNull: false,
-		validate: {
-			notNull(value) {
-				if (value == null) {
-					throw new Error('Empty event_id');
-				}
-			}
-		}
-	}
-});
+  location: {
+    type: Sequelize.GEOMETRY,
+    allowNull: false,
+    validate: {
+      notNull(value) {
+        if (value == null) {
+          throw new Error('Empty location')
+        }
+      }
+    }
+  },
+}, { sequelize });
 
-Restaurant.belongsToMany(culture, { through: 'CultureRestaurant', foreignKey: "restaurant_id"});
-Restaurant.hasMany(food, { as: 'food', foreignKey: 'restaurant_id'});
-Restaurant.belongsTo(event);
+Restaurant.belongsToMany(Culture, { through: 'CultureRestaurant', foreignKey: "restaurant_id"});
+Restaurant.hasMany(Food, {foreignKey: 'restaurant_id'});
 
 module.exports = Restaurant;

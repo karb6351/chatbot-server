@@ -13,6 +13,7 @@ class UserActiveLogger {
 			history: [],
 			currentAction: '',
 			currentCoordinate: '',
+			currentEventId: '',
 			location: {
 				next: '',
 				last: '',
@@ -74,6 +75,11 @@ class UserActiveLogger {
 		let userActiveInfo = this.users[key];
 		userActiveInfo.state = state;
 		this.users[key] = userActiveInfo;	
+	}
+	setCurrentEventId(key, eventId){
+		let userActiveInfo = this.users[key];
+		userActiveInfo.eventId = eventId;
+		this.users[key] = userActiveInfo;
 	}
 	getUsersInfo() {
 		return this.users;

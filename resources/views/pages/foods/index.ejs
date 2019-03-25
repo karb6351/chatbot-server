@@ -1,0 +1,31 @@
+<% layout('layout') -%>
+
+<div class="">
+  <div class="main-container">
+      <%- include('../../include/create_button', {href: '/food/create'}) %>
+  </div>
+  <div class="main-container">
+    <table class="table is-striped is-fullwidth ">
+        <thead>
+            <th>Name</th>
+            <th>description</th>
+            <th>photos</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+          <% foods.map(food => { %>
+            <tr>
+                <td><%= food.name %></td>
+                <td><%= food.description %></td>
+                <td width="20%"><%- include('../../include/img_displayer', {obj: food, key: 'photos', index: 0}) %></td>
+                <td>  
+                  <a href="/food/<%= food.id %>" class="button is-primary"><i class="fas fa-info-circle m-right-5"></i>Info</a>
+                  <a href="/food/<%= food.id %>/edit" class="button is-info"><i class="fas fa-edit m-right-5"></i>Edit</a>
+                  <a href="#" data-href="food/<%= food.id %>" class="delete-button button is-danger"><i class="fas fa-trash-alt m-right-5"></i>Delete</a>
+                </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+  </div>
+</div>

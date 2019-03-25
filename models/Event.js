@@ -1,21 +1,25 @@
-'use strict';
+// 'use strict';
+const Sequelize = require('sequelize');
+const sequelize = require('../app/services/sequelize_service');
 
-const location = require('./location');
+const Restaurant = require('./restaurant');
+const GeneralLocalKnowledge = require('./generallocalknowledge');
 
 const type = ['restaurant', 'general_local_knowledge'];
 
+class Event extends Sequelize.Model {}
+Event.init({
+  instruction: Sequelize.STRING,
+  duration: Sequelize.INTEGER,
+  order: Sequelize.INTEGER,
+  type: Sequelize.ENUM(type[0], type[1]),
+  route_id: Sequelize.INTEGER,
+  model_id: Sequelize.INTEGER
+},{
+  sequelize
+});
 
-module.exports = (sequelize, DataTypes) => {
-  const Event = sequelize.define('Event', {
-    instruction: DataTypes.STRING,
-    duration: DataTypes.INTEGER,
-    order: DataTypes.INTEGER,
-    location_id: DataTypes.INTEGER,
-    type: DataTypes.ENUM(type[0], type[1])
-  }, {});
-  Event.associate = function(models) {
-    // associations can be defined here
-    models.belongsTo(location);
-  };
-  return Event;
-};
+Event.belongsTo(Restaurant, { foreignKey: 'model_id'})
+Event.belongsTo(GeneralLocalKnowledge, { foreignKey: 'model_id'})
+
+module.exports = Event;

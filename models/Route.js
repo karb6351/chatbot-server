@@ -1,9 +1,10 @@
 const Sequelize = require('sequelize');
-const sequelizeService = require('../app/services/sequelize_service');
+const sequelize = require('../app/services/sequelize_service');
 
-const location = require('./location');
+const Event = require('./event');
 
-const route = sequelizeService.define('route', {
+class Route extends Sequelize.Model{}
+Route.init({
 	title: {
 		type: Sequelize.STRING,
 		allowNull: false,
@@ -26,8 +27,10 @@ const route = sequelizeService.define('route', {
 			}
 		}
 	}
-});
+}, {
+	sequelize
+})
 
-route.hasMany(location, { as: 'location', foreignKey: 'route_id' });
+Route.hasMany(Event, { as: 'event', foreignKey: 'route_id' });
 
-module.exports = route;
+module.exports = Route;
