@@ -1,8 +1,24 @@
-const Route = require('../../models/route');
+const sequelize = require('../services/sequelize_service');
+const db = require('../../models');
+
+const instruction = [
+	{
+		id: 1,
+		value: 'stop'
+	},
+	{
+		id: 2,
+		value: 'run'
+	},
+	{
+		id: 3,
+		value: 'eat'
+	}
+];
 
 exports.index = async (req, res) => {
 	try {
-		const routes = await Route.findAll();
+		const routes = await db.Route.findAll();
 		res.render('pages/routes/index', {
 			routes: routes
 		});
@@ -18,18 +34,35 @@ exports.index = async (req, res) => {
 exports.getById = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const route = await Route.findOne({
+		const route = await db.Route.findOne({
 			where: {
 				id
-			}
+			},
+			include: [
+				{
+					model: db.Event,
+					as: 'event',
+					include: [
+						{
+							model: db.Restaurant,
+							
+						},
+						{
+							model: db.GeneralLocalKnowledge,
+							
+						}
+					]
+				}
+			]
 		});
 		res.render('pages/routes/info', {
-			route: route
+			route: route,
+			instruction: instruction
 		});
 	} catch (error) {
 		console.log(error);
+		res.redirect('/route')
 	}
-	res.redirect('/route')
 };
 
 exports.create = (req, res) => {
@@ -41,7 +74,7 @@ exports.create = (req, res) => {
 exports.save = async (req, res) => {
 	const { title, thumbnail } = req.body;
 	try {
-		const route = await Route.create({
+		const route = await db.Route.create({
 			title: title,
 			thumbnail: thumbnail
 		});
@@ -53,7 +86,7 @@ exports.save = async (req, res) => {
 
 exports.edit = (req, res) => {
 	const { id } = req.params;
-	Route.findOne({
+	db.Route.findOne({
 		where: {
 			id
 		}
@@ -76,7 +109,7 @@ exports.update = (req, res) => {
 		title: title,
 		thumbnail: thumbnail
 	};
-	Route.update(updateObj, {
+	db.Route.update(updateObj, {
 		where: {
 			id
 		}
@@ -92,7 +125,7 @@ exports.update = (req, res) => {
 
 exports.delete = (req, res) => {
 	const { id } = req.params;
-	Route.destroy({
+	db.Route.destroy({
 		where: {
 			id
 		}
@@ -112,8 +145,7 @@ exports.delete = (req, res) => {
 };
 
 exports.apiGetRoutes = (req, res) => {
-	console.log(1);
-	Route.findAll()
+	db.Route.findAll()
 		.then((routes) => {
 			return res.status(200).json({
 				status: true,

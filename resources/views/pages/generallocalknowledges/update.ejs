@@ -1,0 +1,12 @@
+<% layout('layout') -%>
+<div class="main-container">
+    <a href="/generallocalknowledge" class="button is-info"><i class="fas fa-arrow-circle-left m-right-5"></i>Back</a>
+</div>
+
+<form action="/generallocalknowledge/<%= generallocalknowledge.id %>" method="post">
+  <input type="hidden" name="_method" value="put" />
+  <%- include('../../include/form_field/input', {obj: generallocalknowledge, key: 'name'}) %>
+  <%- include('../../include/form_field/textarea', {obj: generallocalknowledge, key: 'reminder'}) %>
+  <%- include('../../include/form_field/map', {obj: generallocalknowledge, key: 'location', defaultValue: '{"lat":0, "lng":0}' }) %>    
+  <button class="button is-primary">Submit</button>
+</form>

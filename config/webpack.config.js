@@ -29,8 +29,8 @@ const config = {
 			{
 				test: /\.scss$/,
 				use: [
-						"style-loader", // creates style nodes from JS strings
 						"vue-style-loader",
+						"style-loader", // creates style nodes from JS strings
 						"css-loader", // translates CSS into CommonJS
 						{
 							loader: 'sass-loader',
@@ -39,7 +39,14 @@ const config = {
 							}
 						}
 				]
-			}
+			},
+			{
+        test: /\.css$/,
+        use: [
+          'vue-style-loader',
+          'css-loader'
+        ]
+      }
 		]
   },
   plugins: [

@@ -1,58 +1,58 @@
-const Culture = require('./culture');
-const Food = require('./food');
-
 const Sequelize = require('sequelize');
 const sequelize = require('../app/services/sequelize_service');
 
-class Restaurant extends Sequelize.Model{}
-Restaurant.init({
-  name: {
-		type: Sequelize.STRING,
-		allowNull: false,
-		validate: {
-			notNull(value) {
-				if (value == null) {
-					throw new Error('Empty name');
+module.exports = (sequelize, DataTypes) => {
+	class Restaurant extends Sequelize.Model{}
+	Restaurant.init({
+		name: {
+			type: DataTypes.STRING,
+			allowNull: false,
+			validate: {
+				notNull(value) {
+					if (value == null) {
+						throw new Error('Empty name');
+					}
 				}
 			}
-		}
-	},
-	description: {
-		type: Sequelize.TEXT,
-		allowNull: false,
-		validate: {
-			notNull(value) {
-				if (value == null) {
-					throw new Error('Empty description');
+		},
+		description: {
+			type: DataTypes.TEXT,
+			allowNull: false,
+			validate: {
+				notNull(value) {
+					if (value == null) {
+						throw new Error('Empty description');
+					}
 				}
 			}
-		}
-	},
-	photos: {
-		type: Sequelize.TEXT,
-		allowNull: false,
-		validate: {
-			notNull(value) {
-				if (value == null) {
-					throw new Error('Empty photos');
+		},
+		photos: {
+			type: DataTypes.TEXT,
+			allowNull: false,
+			validate: {
+				notNull(value) {
+					if (value == null) {
+						throw new Error('Empty photos');
+					}
 				}
 			}
-		}
-	},
-  location: {
-    type: Sequelize.GEOMETRY,
-    allowNull: false,
-    validate: {
-      notNull(value) {
-        if (value == null) {
-          throw new Error('Empty location')
-        }
-      }
-    }
-  },
-}, { sequelize });
-
-Restaurant.belongsToMany(Culture, { through: 'CultureRestaurant', foreignKey: "restaurant_id"});
-Restaurant.hasMany(Food, {foreignKey: 'restaurant_id'});
-
-module.exports = Restaurant;
+		},
+		location: {
+			type: DataTypes.STRING,
+			allowNull: false,
+			validate: {
+				notNull(value) {
+					if (value == null) {
+						throw new Error('Empty location')
+					}
+				}
+			}
+		},
+	}, { sequelize });
+	Restaurant.associate = function(models) {
+    // associations can be defined here
+    Restaurant.belongsToMany(models.Culture, { through: models.CultureRestaurant, as: 'culture', foreignKey: "restaurant_id", otherKey: "culture_id"});
+		Restaurant.belongsToMany(models.Food, { through: models.FoodRestaurant, as: 'food', foreignKey: 'restaurant_id', otherKey: "food_id"});
+  };
+	return Restaurant;
+}

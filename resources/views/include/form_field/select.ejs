@@ -1,0 +1,12 @@
+<div class="field">
+  <label class="label"><%- key.charAt(0).toUpperCase() + key.slice(1);  %></label>
+  <div class="control">
+      <div class="select">
+        <select name="<%= key %>">
+          <% selectionValue.map(item => { %>
+            <option value="<%= item.id %>"><%= item.value %></option>
+          <% }) %>
+        </select>
+      </div>
+  </div>
+</div>

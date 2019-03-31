@@ -14,12 +14,12 @@ module.exports = [
         label: "Route",
         submenu: []
       },
-      {
-        link: "/event",
-        icon: "far fa-calendar-alt",
-        label: "Event",
-        submenu: []
-      },
+      // {
+      //   link: "/event",
+      //   icon: "far fa-calendar-alt",
+      //   label: "Event",
+      //   submenu: []
+      // },
       {
         link: "/restaurant",
         icon: "fas fa-utensils",
@@ -36,6 +36,12 @@ module.exports = [
         link: "/culture",
         icon: "fas fa-tags",
         label: "Culture",
+        submenu: []
+      },
+      {
+        link: "/generallocalknowledge",
+        icon: "fas fa-book",
+        label: "General Local Knowledge",
         submenu: []
       },
       {

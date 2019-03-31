@@ -2,8 +2,16 @@ const UserActiveLogger = require('../services/user_active_logger');
 const mapper = require('./module_intent_mapper');
 const { messageNotRecognizedResponse, reachRestaurantResponse } = require('../../resources/string');
 
-const Event = require('../../models/event');
+const db = require('../../models');
+
+const RESTAURANT = 'restaurant';
+const GENERAL_LOCAL_KNOWLEDGE = 'generalLocalKnowledge';
+
+exports.RESTAURANT = RESTAURANT;
+exports.GENERAL_LOCAL_KNOWLEDGE = GENERAL_LOCAL_KNOWLEDGE;
+
 class Conversation {
+
   constructor(userId){
     this.userId = userId;
   }
@@ -32,29 +40,21 @@ class Conversation {
     }
   }
 
-  async processWithCoordinate(context){
+  async processWithCoordinate(context, type){
     try{
       const userInfo = UserActiveLogger.getUserInfo(this.userId);
-      const eventId = userInfo.currentEventId;
-
-      
-      // dummy data for testing
-      return await new Promise((resolve, reject) => {
-        resolve(reachRestaurantResponse())
-      })
-
-
-      const event = await Event.findOne({where: {id: eventId}});
       let subModule = null;
-      if (event.type === 'restaurant'){
+      console.log(type);
+      if (type === 'restaurant'){
         subModule = new (require('./modules/restaurant'))(this.userId);
       }else{
         subModule = new (require('./modules/general_local_knowledge'))(this.userId);
       }
       const response = await subModule.response(null, context, null, null, subModule.COORDINATE);
       return response;
+      
     }catch(error){
-
+      console.log(error);
     }
   }
 

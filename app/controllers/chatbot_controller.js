@@ -1,9 +1,13 @@
 const User = require('../../models/user');
-const Route = require('../../models/route');
+const Sequelize = require('sequelize');
+const db = require('../../models');
+const EventRepostory = require('../../repository/Event');
 const userActiveLogger = require('../services/user_active_logger');
 const tokenHelper = require('../../helpers/token_helper');
 const WatsonService = require('../services/watson_service');
 const SpeechHandler = require('../services/speech_handler');
+
+const { formatUserInfoLocation, getDistanceFromLatLonInKm } = require('../../helpers/util');
 
 const watsonService = new WatsonService();
 
@@ -15,9 +19,9 @@ const GoogleMap = require('../../api/GoogleMap');
 exports.init = async (req, res) => {
 	const { username, identifier } = req.body;
 	try{
-		const user = await User.findOne({where: {identifier}});
+		const user = await db.User.findOne({where: {identifier}});
 		if (!user) {
-			user = await User.create({
+			user = await db.User.create({
 				username: username ? username : 'guest',
 				identifier: identifier
 			});
@@ -58,41 +62,49 @@ exports.join = async (req, res) => {
 	const { routeId } = req.body;
 	// find first restautran of the route;
 	try{
-		const route = await Route.findOne({
+		const route = await db.Route.findOne({
 			where: {
-				id: routeId
+				id: routeId,
 			},
-			// include: [{
-			//     model: Event,
-			//     where: { route_id : Sequelize.col('Route.id') }
-			// }]
+			include: [
+				{
+					model: db.Event,
+					as: 'event',
+					order: [['order', 'ASC']],
+					include: [
+						{
+							model: db.Restaurant
+						},
+						{
+							model: db.GeneralLocalKnowledge
+						}
+					]
+				}
+			]
 		});
-		console.log(route);
-		const fakeRestaurant = {
-			name: '雙連台式美食',
-			coordinate: {
-				latitude: 22.3126592,
-				longitude: 114.1785663
-			}
-		};
+		// --------------------------------------------
+		
+		const startpoint = {
+			latitude: 22.316201,
+			longitude: 114.180331
+		}
 
-		// startpoint = {
-		// 	coordinate: {
-		// 		latitude: 22.316201,
-		// 		longitude: 114.180331
-		// 	}
-		// }
+		// --------------------------------------------
 		
 		userActiveLogger.addRouteId(id, routeId);
-		// userActiveLogger.setCurrentEventId(id, events[0].id);
-		userActiveLogger.setCurrentEventId(id, 1); // dummy data
+		userActiveLogger.setCurrentEventId(id, route.event[0].id);
 		userActiveLogger.addCurrentAction(id, userActiveLogger.ACTION_WALK);
-		userActiveLogger.setNextLocation(id, fakeRestaurant);
+
+		const restaurant = await userActiveLogger.moveToNextRestaurant(id);
+		// const GeneralLocalKnowledge = await userActiveLogger.moveToNextGeneralLocalKnowledge(id);
+		
+		// const restaurant = formatUserInfoLocation(route);
+		// userActiveLogger.setNextLocation(id, restaurant);
 
 		const messages = messageHelper.build(responseMessage.joinRouteResponse(route), messageHelper.CHATBOT);
 		res.status(200).json({
 			messages: messages,
-			restaurant: fakeRestaurant
+			restaurant: restaurant
 		});
 
 	}catch(error){
@@ -110,16 +122,28 @@ exports.updateLocation = async (req, res) => {
 	const { location } = req.body;
 	userActiveLogger.addCurrentCoordinate(id, location);
 	const userInfo = userActiveLogger.getUserInfo(id);
-	const nextLocation = userInfo.location['next'];
+	const currentLocation = userInfo.location['current'];
 	let messages = [];
 	let hasEvent = false;
-	if (nextLocation) {
+	if (currentLocation && currentLocation !== '') {
 		try {
-			const { data } = await GoogleMap.distanceMatrix(location, nextLocation.coordinate);
-			const { distance } = data.rows[0].elements[0];
-			if (distance.value < 50) {
-				const messageObj = await SpeechHandler.process_location(id, null, null);
-				messages = messageHelper.build(messageObj.messages, messageHelper.CHATBOT); 
+			const distanceBewteenNextLocation = getDistanceFromLatLonInKm(location, currentLocation.coordinate);
+			// check user is close to restaurant in 10m
+			if (distanceBewteenNextLocation < 0.01) {
+
+				const nextEvent = await EventRepostory.findNextEventById(userInfo.currentEventId);
+
+				let isLast = nextEvent ? false : true;
+				
+				userActiveLogger.moveToNextRestaurant(id);
+
+				let extenalMessage = [];
+				if (isLast){
+					extenalMessage = responseMessage.reachLastResponse()
+				}
+				
+				messageObj = await SpeechHandler.process_location(id, null, null, 'restaurant');
+				messages = messageHelper.build(extenalMessage.concat(messageObj.messages), messageHelper.CHATBOT); 
 				hasEvent = true;
 			}
 		} catch (error) {
@@ -136,15 +160,3 @@ exports.updateLocation = async (req, res) => {
 		hasEvent: hasEvent 
 	});
 };
-
-exports.test = (req, res) => {
-	const { identifier } = req.body;
-	User.findOne({
-		where: {
-			id: identifier
-		}
-	}).then((user) => {
-		console.log(user);
-	});
-};
-;

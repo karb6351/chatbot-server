@@ -1,10 +1,12 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../app/services/sequelize_service');
 
-class GeneralLocalKnowledge extends Sequelize.Model {}
-GeneralLocalKnowledge.init({
-  reminder: Sequelize.STRING,
-  location: Sequelize.GEOMETRY
-},{ sequelize })
-
-module.exports = GeneralLocalKnowledge;
+module.exports = (sequelize, DataTypes) => {
+  class GeneralLocalKnowledge extends Sequelize.Model {}
+  GeneralLocalKnowledge.init({
+    reminder: DataTypes.STRING,
+    name: DataTypes.STRING,
+    location: DataTypes.STRING
+  },{ sequelize })
+  return GeneralLocalKnowledge;
+}

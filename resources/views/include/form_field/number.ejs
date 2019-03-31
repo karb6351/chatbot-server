@@ -1,0 +1,6 @@
+<div class="field">
+    <label class="label"><%- key.charAt(0).toUpperCase() + key.slice(1);  %></label>
+    <div class="control">
+      <input class="input" type="number" name="<%= key %>" value="<%= typeof obj !== 'undefined' && obj ? obj[key] : 0 %>">
+    </div>
+  </div>

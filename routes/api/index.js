@@ -10,8 +10,6 @@ const routeController = require('../../app/controllers/route_controller');
 
 router.use(authMiddleware);
 
-router.post('/chat/test', chatController.test);
-
 router.post('/chat/init', chatController.init);
 router.post('/chat/join', chatController.join);
 router.post('/chat/message', chatController.message);

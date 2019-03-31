@@ -1,7 +1,9 @@
 const Sequelize = require('sequelize');
-const sequelizeService = require('../app/services/sequelize_service')
+const sequelize = require('../app/services/sequelize_service');
 
-const User = sequelizeService.define('users', {
+module.exports = (sequelize, DataTypes) => {
+  class User extends Sequelize.Model{}
+  User.init({
     username: {
       type: Sequelize.STRING,
       allowNull: false,
@@ -24,17 +26,46 @@ const User = sequelizeService.define('users', {
         }
       }
     },
-    // password: {
-    //   type: Sequelize.STRING,
-    //   allowNull: false,
-    //   validate: {
-    //     notNull(value) {
-    //       if (value == null) {
-    //         throw new Error('Empty password')
-    //       }
-    //     }
-    //   }
-    // }
-  });
+  },{ sequelize })
+  // Culture.belongsToMany(Restaurant, { through: CultureRestaurant, foreignKey: 'culture_id', otherKey: 'restaurant_id'});
+  return User
+}
+
+
+// const User = sequelizeService.define('users', {
+//     username: {
+//       type: Sequelize.STRING,
+//       allowNull: false,
+//       validate: {
+//         notNull(value) {
+//           if (value == null) {
+//             throw new Error('Empty username')
+//           }
+//         }
+//       }
+//     },
+//     identifier: {
+//       type: Sequelize.STRING,
+//       allowNull: false,
+//       validate: {
+//         notNull(value) {
+//           if (value == null) {
+//             throw new Error('Empty identifier')
+//           }
+//         }
+//       }
+//     },
+//     // password: {
+//     //   type: Sequelize.STRING,
+//     //   allowNull: false,
+//     //   validate: {
+//     //     notNull(value) {
+//     //       if (value == null) {
+//     //         throw new Error('Empty password')
+//     //       }
+//     //     }
+//     //   }
+//     // }
+//   });
   
-  module.exports = User
+//   module.exports = User

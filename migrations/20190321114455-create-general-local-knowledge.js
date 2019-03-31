@@ -11,11 +11,14 @@ module.exports = {
       reminder: {
         type: Sequelize.STRING
       },
+      name: {
+        type: Sequelize.STRING
+      },
       event_id: {
         type: Sequelize.TEXT
       },
       location: {
-        type: Sequelize.GEOMETRY
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

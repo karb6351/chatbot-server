@@ -1,12 +1,42 @@
 <% layout('layout') -%>
 <div class="main-container">
-    <a href="/route" class="button is-info"><i class="fas fa-arrow-circle-left m-right-5"></i>Back</a>
+    <a href="/event" class="button is-info"><i class="fas fa-arrow-circle-left m-right-5"></i>Back</a>
+    <a href="/event/create/<%= route.id %>" class="button is-primary">
+      <i class="fas fa-plus m-right-5"></i>
+      <span>Add event</span>
+    </a>
 </div>
 
 <div class="main-container">
     <div class="card">
       <div class="card-content">
-        <test />
+        <table class="table is-striped is-fullwidth ">
+          <thead>
+              <th>Order</th>
+              <th>Duration</th>
+              <th>Instruction</th>
+              <th>Type</th>
+              <th>Type Model Name</th>
+              <th>Location</th>
+              <th>Actions</th>
+          </thead>
+          <tbody>
+            <% route.event.map((event, index) => { %>
+              <tr>
+                  <td><%= index %></td>
+                  <td><%= event.duration %></td>
+                  <td><%= instruction.filter(item => event.instruction == item.id)[0].value %></td>
+                  <td><%= event.type %></td>
+                  <td><%= event.type === 'restaurant' ? event.Restaurant.name : event.GeneralLocalKnowledge.name %></td>
+                  <td><%= event.type === 'restaurant' ? event.Restaurant.location : event.GeneralLocalKnowledge.location %></td>
+                  <td>  
+                    <a href="/event/<%= event.id %>/edit" class="button is-info"><i class="fas fa-edit m-right-5"></i>Edit</a>
+                    <a href="#" data-href="/event/<%= event.id %>" class="delete-button button is-danger"><i class="fas fa-trash-alt m-right-5"></i>Delete</a>
+                  </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
       </div>
     </div>
 </div>

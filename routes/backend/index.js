@@ -12,6 +12,7 @@ const cultureController = require('../../app/controllers/culture_controller');
 const foodController = require('../../app/controllers/food_controller');
 const eventController = require('../../app/controllers/event_controller');
 const restaurantController = require('../../app/controllers/restaurant_controller');
+const generallocalknowledgeController = require('../../app/controllers/generallocalknowledge_controller');
 
 router.use(authMiddleware);
 
@@ -65,10 +66,29 @@ router.delete('/food/:id', foodController.delete);
 
 // restaurant
 router.get('/restaurant', restaurantController.index);
-router.post('/restaurant/create', restaurantController.create);
+router.get('/restaurant/create', restaurantController.create);
+router.post('/restaurant/', restaurantController.save);
+router.get('/restaurant/:id/edit', restaurantController.edit);
 router.get('/restaurant/:id', restaurantController.getById);
-router.post('/restaurant/:id', restaurantController.update);
+router.put('/restaurant/:id', restaurantController.update);
 router.delete('/restaurant/:id', restaurantController.delete);
+
+// general local knowledge
+router.get('/generallocalknowledge', generallocalknowledgeController.index);
+router.get('/generallocalknowledge/create', generallocalknowledgeController.create);
+router.post('/generallocalknowledge/', generallocalknowledgeController.save);
+router.get('/generallocalknowledge/:id/edit', generallocalknowledgeController.edit);
+router.get('/generallocalknowledge/:id', generallocalknowledgeController.getById);
+router.put('/generallocalknowledge/:id', generallocalknowledgeController.update);
+router.delete('/generallocalknowledge/:id', generallocalknowledgeController.delete);
+
+// event
+// router.get('/event', eventController.index);
+router.get('/event/create/:routeId', eventController.create);
+router.post('/event', eventController.save);
+router.get('/event/:id/edit', eventController.edit);
+router.put('/event/:id', eventController.update);
+router.delete('/event/:id', eventController.delete);
 
 
 router.get('/', (req, res) => res.redirect('/home'))

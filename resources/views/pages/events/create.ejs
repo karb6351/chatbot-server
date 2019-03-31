@@ -1,0 +1,15 @@
+<% layout('layout') -%>
+<div class="main-container">
+    <a href="/route/<%= routeId %>" class="button is-info"><i class="fas fa-arrow-circle-left m-right-5"></i>Back</a>
+</div>
+<!-- <div class="card">
+  <div class="card-content"> -->
+    <form action="/event" method="post">
+      <input type="hidden" name="route_id" value="<%= routeId %>">
+      <%- include('../../include/form_field/number', {obj: event, key: 'duration'}) %>
+      <%- include('../../include/form_field/select', {obj: event, selectionValue: selectionValue, key: 'instruction'}) %>
+      <%- include('../../include/form_field/event_model', {obj: event, restaurant: restaurant, generalLocalKnowledge: generalLocalKnowledge }) %>
+      <button class="button is-primary">Submit</button>
+    </form>
+  <!-- </div>
+</div> -->

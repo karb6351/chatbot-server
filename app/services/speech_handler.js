@@ -146,11 +146,11 @@ exports.process_message = async (id, previousIntent, { input, intents, entities,
 	// }
 };
 
-exports.process_location = async (id, previousIntent, context) => {
+exports.process_location = async (id, previousIntent, context, type) => {
 	let messages = [];
 	try {
 		const conversation = new Conversation(id);
-		messages = await conversation.processWithCoordinate(null);
+		messages = await conversation.processWithCoordinate(null, type);
 		userActiveLogger.addHistory(id, {
 			question: null,
 			answer: messages,

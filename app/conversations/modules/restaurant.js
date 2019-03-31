@@ -1,5 +1,7 @@
 const BaseModule = require('./base_module');
 
+const EventRepository = require('../../../repository/event');
+
 const responseMessage = require('../../../resources/string');
 const UserActiveLogger = require('../../services/user_active_logger');
 
@@ -27,5 +29,9 @@ module.exports = class Restaurant extends BaseModule {
 		}
 	}
 
-	async generateReponseWithCoordinate() {}
+	async generateReponseWithCoordinate() {
+		const userInfo = UserActiveLogger.getUserInfo(this.userId);
+		const event = await EventRepository.findEventById(userInfo.currentEventId);
+		return responseMessage.reachRestaurantResponse(event.Restaurant)
+	}
 };

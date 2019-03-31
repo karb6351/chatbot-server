@@ -2,24 +2,57 @@
 const Sequelize = require('sequelize');
 const sequelize = require('../app/services/sequelize_service');
 
-const Restaurant = require('./restaurant');
-const GeneralLocalKnowledge = require('./generallocalknowledge');
+const Restaurant = sequelize.import('./restaurant');
+const GeneralLocalKnowledge = sequelize.import('./generallocalknowledge');
 
-const type = ['restaurant', 'general_local_knowledge'];
+const type = [ 
+  {
+    id: 1,
+    value: 'restaurant', 
+  },
+  {
+    id: 2,
+    value: 'general_local_knowledge' 
+  }
+];
+const instruction = [
+	{
+		id: 1,
+		value: 'stop'
+	},
+	{
+		id: 2,
+		value: 'run'
+	},
+	{
+		id: 3,
+		value: 'eat'
+	}
+];
 
-class Event extends Sequelize.Model {}
-Event.init({
-  instruction: Sequelize.STRING,
-  duration: Sequelize.INTEGER,
-  order: Sequelize.INTEGER,
-  type: Sequelize.ENUM(type[0], type[1]),
-  route_id: Sequelize.INTEGER,
-  model_id: Sequelize.INTEGER
-},{
-  sequelize
-});
+exports.type = type;
+exports.instruction = instruction;
 
-Event.belongsTo(Restaurant, { foreignKey: 'model_id'})
-Event.belongsTo(GeneralLocalKnowledge, { foreignKey: 'model_id'})
+module.exports = (sequelize, DataTypes) => {
+	class Event extends Sequelize.Model {}
+	Event.init(
+		{
+			instruction: DataTypes.STRING,
+			duration: DataTypes.INTEGER,
+			order: DataTypes.INTEGER,
+			type: DataTypes.ENUM(type[0].value, type[1].value),
+			route_id: DataTypes.INTEGER,
+			model_id: DataTypes.INTEGER
+		},
+		{
+			sequelize
+		}
+	);
 
-module.exports = Event;
+	Event.associate = function(models) {
+		// associations can be defined here
+		Event.belongsTo(models.Restaurant, { foreignKey: 'model_id' });
+		Event.belongsTo(models.GeneralLocalKnowledge, { foreignKey: 'model_id' });
+	};
+	return Event;
+};

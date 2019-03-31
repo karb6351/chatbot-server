@@ -1,0 +1,30 @@
+<% layout('layout') -%>
+
+<div class="">
+  <div class="main-container">
+      <%- include('../../include/create_button', {href: '/generallocalknowledge/create'}) %>
+  </div>
+  <div class="main-container">
+    <table class="table is-striped is-fullwidth ">
+        <thead>
+            <th>Reminder</th>
+            <th>location</th>
+            <th>Photos</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+          <% generallocalknowledges.map(generallocalknowledge => { %>
+            <tr>
+                <td width="40%"><%= generallocalknowledge.reminder %></td>
+                <td><%= generallocalknowledge.location %></td>
+                <td>  
+                  <a href="/generallocalknowledge/<%= generallocalknowledge.id %>" class="button is-primary"><i class="fas fa-info-circle m-right-5"></i>Info</a>
+                  <a href="/generallocalknowledge/<%= generallocalknowledge.id %>/edit" class="button is-info"><i class="fas fa-edit m-right-5"></i>Edit</a>
+                  <a href="#" data-href="generallocalknowledge/<%= generallocalknowledge.id %>" class="delete-button button is-danger"><i class="fas fa-trash-alt m-right-5"></i>Delete</a>
+                </td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+  </div>
+</div>

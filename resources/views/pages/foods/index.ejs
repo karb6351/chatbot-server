@@ -15,8 +15,8 @@
         <tbody>
           <% foods.map(food => { %>
             <tr>
-                <td><%= food.name %></td>
-                <td><%= food.description %></td>
+                <td width="15%"><%= food.name %></td>
+                <td width="40%"><%= food.description %></td>
                 <td width="20%"><%- include('../../include/img_displayer', {obj: food, key: 'photos', index: 0}) %></td>
                 <td>  
                   <a href="/food/<%= food.id %>" class="button is-primary"><i class="fas fa-info-circle m-right-5"></i>Info</a>

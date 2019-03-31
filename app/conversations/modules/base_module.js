@@ -22,7 +22,7 @@ module.exports = class BaseModule {
 			}
 			
 		} catch (error) {
-			console.log(error.message);
+			console.log(error);
 			return messageNotRecognizedResponse();
 		}
 	}

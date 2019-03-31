@@ -1,0 +1,59 @@
+<% layout('layout') -%>
+<div class="main-container">
+    <a href="/restaurant" class="button is-info"><i class="fas fa-arrow-circle-left m-right-5"></i>Back</a>
+</div>
+<!-- <div class="card">
+  <div class="card-content"> -->
+    <form action="/restaurant" method="post">
+      <div class="columns">
+        <div class="column is-6">
+          <div class="card">
+            <header class="card-header">
+              <p class="card-header-title">Meta</p>
+            </header>
+            <div class="card-content">
+              <%- include('../../include/form_field/input', {obj: restaurant, key: 'name'}) %>
+              <%- include('../../include/form_field/textarea', {obj: restaurant, key: 'description'}) %>
+            </div>
+          </div>
+        </div>
+        <div class="column is-6">
+          <div class="card">
+            <header class="card-header">
+              <p class="card-header-title">Food and culture</p>
+            </header>
+            <div class="card-content">
+              <%- include('../../include/form_field/multiselect', {obj: restaurant, value: cultureRestaurant , target: cultures, key: 'culture_id'}) %>
+              <%- include('../../include/form_field/multiselect', {obj: restaurant, value: foodRestaurant , target: foods, key: 'food_id'}) %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column is-12">
+          <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">Content</p>
+            </header>
+            <div class="card-content">
+              <%- include('../../include/form_field/dropzone', {obj: restaurant, key: 'photos', max: 10}) %>    
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="columns">
+          <div class="column is-12">
+            <div class="card">
+              <header class="card-header">
+                  <p class="card-header-title">Location</p>
+              </header>
+              <div class="card-content">
+                  <%- include('../../include/form_field/map', {obj: restaurant, key: 'location', defaultValue: '{"lat":0, "lng":0}' }) %>    
+              </div>
+            </div>
+          </div>
+        </div>
+      <button class="button is-primary">Submit</button>
+    </form>
+  <!-- </div>
+</div> -->

@@ -1,8 +1,9 @@
-const Food = require('../../models/food');
+const sequelize = require('../services/sequelize_service');
+const db = require('../../models');
 
 exports.index = async (req, res) => {
 	try {
-		const foods = await Food.findAll();
+		const foods = await db.Food.findAll();
 		res.render('pages/foods/index', {
 			foods: foods
 		});
@@ -18,7 +19,7 @@ exports.index = async (req, res) => {
 exports.getById = async (req, res) => {
 	const { id } = req.params;
 	try {
-		const food = await Food.findOne({
+		const food = await db.Food.findOne({
 			where: {
 				id
 			}
@@ -43,7 +44,7 @@ exports.create = (req, res) => {
 exports.save = async (req, res) => {
 	const { name, description, photos } = req.body;
 	try {
-		const food = await Food.create({
+		const food = await db.Food.create({
 			name, description, photos
 		});
 	} catch (error) {
@@ -54,7 +55,7 @@ exports.save = async (req, res) => {
 
 exports.edit = (req, res) => {
 	const { id } = req.params;
-	Food.findOne({
+	db.Food.findOne({
 		where: {
 			id
 		}
@@ -76,7 +77,7 @@ exports.update = (req, res) => {
 	let updateObj = {
 		name, description, photos
 	};
-	Food.update(updateObj, {
+	db.Food.update(updateObj, {
 		where: {
 			id
 		}
@@ -92,7 +93,7 @@ exports.update = (req, res) => {
 
 exports.delete = (req, res) => {
 	const { id } = req.params;
-	Food.destroy({
+	db.Food.destroy({
 		where: {
 			id
 		}

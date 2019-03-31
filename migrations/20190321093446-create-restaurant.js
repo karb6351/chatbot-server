@@ -21,7 +21,7 @@ module.exports = {
         type: Sequelize.TEXT,
       },
       location: {
-        type: Sequelize.GEOMETRY
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,

@@ -1,8 +1,8 @@
-const Culture = require('../../models/culture');
+const db = require('../../models');
 
 exports.index = async (req, res) => {
 	try {
-		const cultures = await Culture.findAll();
+		const cultures = await db.Culture.findAll();
 		res.render('pages/cultures/index', {
 			cultures: cultures
 		});
@@ -24,7 +24,7 @@ exports.create = (req, res) => {
 exports.save = async (req, res) => {
 	const { name, description, color } = req.body;
 	try {
-		const culture = await Culture.create({
+		const culture = await db.Culture.create({
 			name, description, color
 		});
 	} catch (error) {
@@ -35,7 +35,7 @@ exports.save = async (req, res) => {
 
 exports.edit = (req, res) => {
 	const { id } = req.params;
-	Culture.findOne({
+	db.Culture.findOne({
 		where: {
 			id
 		}
@@ -57,7 +57,7 @@ exports.update = (req, res) => {
 	let updateObj = {
 		name, description, color
 	};
-	Culture.update(updateObj, {
+	db.Culture.update(updateObj, {
 		where: {
 			id
 		}
@@ -73,7 +73,7 @@ exports.update = (req, res) => {
 
 exports.delete = (req, res) => {
 	const { id } = req.params;
-	Culture.destroy({
+	db.Culture.destroy({
 		where: {
 			id
 		}

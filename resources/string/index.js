@@ -107,17 +107,43 @@ exports.restaurantInfoResponse = (restaurant) => [
 // 	`The popular dishes is ${restaurant.dishes}.`
 // ]
 
-exports.reachRestaurantResponse = (restaurant) => [
-	{
-		type: 'text',
-		content: 'You are close to the restaurant. The restaurant is look like this. Do you find it ?'
-	},
-	{
-		type: 'image',
-		content: `http://192.168.2.182:8000/storage/test4.jpg`,
-		// content: `http://192.168.240.131:8000/storage/test4.jpg`,
-	}
-];
+exports.reachRestaurantResponse = (restaurant) => {
+	console.log(restaurant);
+	let response = [
+		{
+			type: 'text',
+			content: 'You are close to the restaurant. The restaurant is look like this. Do you find it ?'
+		}
+	];
+	let imageResponse = JSON.parse(restaurant.photos).map(item => {
+		return {
+			type: 'image',
+			content: `http://192.168.2.182:8000/${item.dataURL}`
+		};
+	})
+	return response.concat(imageResponse);
+};
+
+exports.reachGeneralLocalKnowledgeResponse = (generalLocalKnowledge) => {
+	console.log(generalLocalKnowledge);
+	let response = [
+		{
+			type: 'text',
+			content: 'Hey, just a moment.'
+		}
+	];
+	let otherResponse = generalLocalKnowledge.splice('\n');
+	console.log(otherResponse);
+	return response.concat(imageResponse);
+};
+exports.reachLastResponse = () => {
+	return [
+		{
+			type: 'text',
+			content: 'Happiness was past so fast,here is the last restaurant in your route today.'
+		},
+	]
+}
 
 exports.messageNotRecognizedResponse = () => [
 	{
