@@ -1,8 +1,6 @@
 const UserActiveLogger = require('../services/user_active_logger');
 const mapper = require('./module_intent_mapper');
-const { messageNotRecognizedResponse, reachRestaurantResponse } = require('../../resources/string');
-
-const db = require('../../models');
+const { messageNotRecognizedResponse } = require('../../resources/string');
 
 const RESTAURANT = 'restaurant';
 const GENERAL_LOCAL_KNOWLEDGE = 'generalLocalKnowledge';
@@ -25,7 +23,11 @@ class Conversation {
 
   async processWithMessage(intents, context, message){
     try{
-      const moduleType = this.findModuleByIntent(intents[0].intent);
+      const userInfo = UserActiveLogger.getUserInfo(this.userId);
+      // use last intent to be current intent when lastIntent contains value(While mean topic not ended)
+      let intent = userInfo.lastIntent ? userInfo.lastIntent : intents ? intents[0].intent : null;
+      const moduleType = this.findModuleByIntent(intent);
+
       const payload = {}
       if (!moduleType){
         // use default module to handle
@@ -36,15 +38,17 @@ class Conversation {
         return response;
       }
     }catch(error){
-      return messageNotRecognizedResponse();
+      return {
+        message: messageNotRecognizedResponse(),
+        restaurant: userInfo.location.current
+      };
     }
   }
 
-  async processWithCoordinate(context, type){
+  async processWithCoordinate(context, type, payload){
     try{
       const userInfo = UserActiveLogger.getUserInfo(this.userId);
       let subModule = null;
-      console.log(type);
       if (type === 'restaurant'){
         subModule = new (require('./modules/restaurant'))(this.userId);
       }else{

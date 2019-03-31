@@ -2,6 +2,8 @@ const BaseModule = require('./base_module');
 const db = require('../../../models');
 const responseMessage = require('../../../resources/string');
 const UserActiveLogger = require('../../services/user_active_logger');
+const { getNearestLocation } = require('../../../helpers/util');
+const GeneralLocalKnowledgeRepository = require('../../../repository/GeneralLocalKnowledge');
 
 module.exports = class GeneralLocalKnowledge extends BaseModule {
 	intentType() {
@@ -20,17 +22,9 @@ module.exports = class GeneralLocalKnowledge extends BaseModule {
 
 	async generateReponseWithCoordinate() {
 		const userInfo = UserActiveLogger.getUserInfo(this.userId);
-		const currentEventId = userInfo.currentEventId;
-		const event = await db.Event.findOne({
-			where: {
-				id: currentEventId,
-			},
-			include: [
-				{
-					model: db.GeneralLocalKnowledge
-				}
-			]
-		})
-		return responseMessage.reachRestaurantResponse(event.Restaurant)
+		const location = userInfo.currentCoordinate;
+		const generalLocalKnowledges = await GeneralLocalKnowledgeRepository.getAllGeneralLocalKnowledge();
+		const nearestLocation = getNearestLocation(generalLocalKnowledges, location);
+		return responseMessage.reachGeneralLocalKnowledgeResponse(nearestLocation);
 	}
 };

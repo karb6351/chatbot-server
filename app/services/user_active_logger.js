@@ -1,6 +1,8 @@
 const db = require('../../models');
 const EventRepository = require('../../repository/event');
+const RouteRepository = require('../../repository/route');
 const { formatUserInfoLocation } = require('../../helpers/util');
+
 
 class UserActiveLogger {
 	constructor() {
@@ -10,6 +12,8 @@ class UserActiveLogger {
 		this.ACTION_WALK = 0;
 		this.ACTION_EAT = 1;
 		this.ACTION_STOP = 2;
+
+		
 	}
 	createUserInfo(key, user) {
 		this.users[key] = {
@@ -19,6 +23,7 @@ class UserActiveLogger {
 			currentAction: '',
 			currentCoordinate: '',
 			currentEventId: '',
+			lastIntent: '',
 			location: {
 				next: '',
 				last: '',
@@ -36,40 +41,27 @@ class UserActiveLogger {
 	async moveToNextRestaurant(key){
 		const user = this.getUserInfo(key);
 		try{
-			const route = await db.Route.findOne({
-				where: {
-					id: user.routeId
-				},
-				include: [
-					{
-						model: db.Event,
-						as: 'event',
-						where: {
-							type: 'restaurant'
-						},
-						order: [['order', 'ASC']],
-						include: [
-							{
-								model: db.Restaurant
-							}
-						]
-					}
-				]
-			})
+			const route = await RouteRepository.findRouteById(user.routeId);
 			// first time join the route
 			if (user.location.current === ''){
 				this.setCurrentLocation(key, formatUserInfoLocation(route.event[0].Restaurant, route.event[0]));
+				this.setCurrentEventId(key, route.event[0].id);
 			// else, simpliy move forward the location
 			}else{
 				this.setLastLocation(key, user.location.current);
 				this.setCurrentLocation(key, user.location.next);
+				this.setCurrentEventId(key, user.location.current.event_id);
 			}
 			
-			const nextEvent = await EventRepository.findNextEventById(user.currentEventId);
-			
+			let nextEvent = null;
+			if (user.currentEventId){
+				nextEvent = await EventRepository.findNextEventById(user.currentEventId);
+			}
 			
 			if (nextEvent){
 				this.setNextLocation(key, formatUserInfoLocation(nextEvent.Restaurant, nextEvent));
+			}else{
+				this.setNextLocation(key, '');
 			}
 	
 			console.log(userActiveLogger.getUserInfo(key).location);
@@ -229,6 +221,13 @@ class UserActiveLogger {
 		userActiveInfo.currentEventId = eventId;
 		this.users[key] = userActiveInfo;
 	}
+
+	setLastIntent(key, intent){
+		let userActiveInfo = this.users[key];
+		userActiveInfo.lastIntent = intent;
+		this.users[key] = userActiveInfo;
+	}
+
 	getUsersInfo() {
 		return this.users;
 	}

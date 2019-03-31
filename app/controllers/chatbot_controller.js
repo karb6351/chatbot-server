@@ -1,20 +1,20 @@
-const User = require('../../models/user');
-const Sequelize = require('sequelize');
 const db = require('../../models');
+const RouteRepostory = require('../../repository/Route');
 const EventRepostory = require('../../repository/Event');
+const GeneralLocalKnowledgeRepostory = require('../../repository/GeneralLocalKnowledge');
+
 const userActiveLogger = require('../services/user_active_logger');
 const tokenHelper = require('../../helpers/token_helper');
 const WatsonService = require('../services/watson_service');
 const SpeechHandler = require('../services/speech_handler');
 
-const { formatUserInfoLocation, getDistanceFromLatLonInKm } = require('../../helpers/util');
+const { getDistanceFromLatLonInKm, getNearestLocation } = require('../../helpers/util');
 
 const watsonService = new WatsonService();
 
 const responseMessage = require('../../resources/string');
 const messageHelper = require('../../helpers/response_message_helper');
 
-const GoogleMap = require('../../api/GoogleMap');
 
 exports.init = async (req, res) => {
 	const { username, identifier } = req.body;
@@ -46,10 +46,12 @@ exports.init = async (req, res) => {
 exports.message = async (req, res) => {
 	const { userData: { id } } = req;
 	const { message, intent, context } = req.body;
+	
 	try{
 		const response = await watsonService.message(message, context);
 		let messageObj = await SpeechHandler.process_message(id, intent, response);
 		messageObj.messages = messageHelper.build(messageObj.messages, messageHelper.CHATBOT); 
+		console.log(messageObj);
 		res.status(200).json(messageObj);
 	}catch(error){
 		console.error(error);
@@ -62,26 +64,6 @@ exports.join = async (req, res) => {
 	const { routeId } = req.body;
 	// find first restautran of the route;
 	try{
-		const route = await db.Route.findOne({
-			where: {
-				id: routeId,
-			},
-			include: [
-				{
-					model: db.Event,
-					as: 'event',
-					order: [['order', 'ASC']],
-					include: [
-						{
-							model: db.Restaurant
-						},
-						{
-							model: db.GeneralLocalKnowledge
-						}
-					]
-				}
-			]
-		});
 		// --------------------------------------------
 		
 		const startpoint = {
@@ -90,21 +72,20 @@ exports.join = async (req, res) => {
 		}
 
 		// --------------------------------------------
-		
+		const route = await RouteRepostory.findRouteById(routeId);
+
 		userActiveLogger.addRouteId(id, routeId);
 		userActiveLogger.setCurrentEventId(id, route.event[0].id);
 		userActiveLogger.addCurrentAction(id, userActiveLogger.ACTION_WALK);
 
 		const restaurant = await userActiveLogger.moveToNextRestaurant(id);
-		// const GeneralLocalKnowledge = await userActiveLogger.moveToNextGeneralLocalKnowledge(id);
 		
-		// const restaurant = formatUserInfoLocation(route);
-		// userActiveLogger.setNextLocation(id, restaurant);
-
 		const messages = messageHelper.build(responseMessage.joinRouteResponse(route), messageHelper.CHATBOT);
 		res.status(200).json({
 			messages: messages,
-			restaurant: restaurant
+			restaurant: restaurant,
+			intent: null,
+			content: null,
 		});
 
 	}catch(error){
@@ -125,33 +106,47 @@ exports.updateLocation = async (req, res) => {
 	const currentLocation = userInfo.location['current'];
 	let messages = [];
 	let hasEvent = false;
+	// check user is reach restaurant
 	if (currentLocation && currentLocation !== '') {
-		try {
-			const distanceBewteenNextLocation = getDistanceFromLatLonInKm(location, currentLocation.coordinate);
-			// check user is close to restaurant in 10m
-			if (distanceBewteenNextLocation < 0.01) {
-
-				const nextEvent = await EventRepostory.findNextEventById(userInfo.currentEventId);
-
-				let isLast = nextEvent ? false : true;
+		// check user is close to restaurant in 10m
+		if (getDistanceFromLatLonInKm(location, currentLocation.coordinate) < 0.01) {
+			try {
 				
-				userActiveLogger.moveToNextRestaurant(id);
-
+				const nextEvent = await EventRepostory.findNextEventById(userInfo.currentEventId);
+				let isLast = nextEvent ? false : true;
+				// userActiveLogger.moveToNextRestaurant(id);
 				let extenalMessage = [];
 				if (isLast){
 					extenalMessage = responseMessage.reachLastResponse()
 				}
-				
 				messageObj = await SpeechHandler.process_location(id, null, null, 'restaurant');
 				messages = messageHelper.build(extenalMessage.concat(messageObj.messages), messageHelper.CHATBOT); 
 				hasEvent = true;
+			} catch (error) {
+				console.error(error);
 			}
-		} catch (error) {
-			console.error(error);
+		}else {
+			// check user is reach any general local knowledge location
+			try{
+				const generalLocalKnowledges = await GeneralLocalKnowledgeRepostory.getAllGeneralLocalKnowledge();
+				if (generalLocalKnowledges.length !== 0){
+					const nearestLocation = getNearestLocation(generalLocalKnowledges, location);
+					const nearestLocationCoordinate = JSON.parse(nearestLocation.location);
+					
+					if (nearestLocation && getDistanceFromLatLonInKm(location, {
+						latitude: nearestLocationCoordinate.lat,
+						longitude: nearestLocationCoordinate.lng
+					}) < 0.01){
+						messageObj = await SpeechHandler.process_location(id, null, null, 'general_local_knowledge');
+						messages = messageHelper.build(messageObj.messages, messageHelper.CHATBOT); 
+						hasEvent = true;
+					}
+				}
+			}catch(error){
+				console.log(error);
+			}
 		}
 	}
-
-	console.log(messages, hasEvent);
 
 	res.status(200).json({
 		status: true,

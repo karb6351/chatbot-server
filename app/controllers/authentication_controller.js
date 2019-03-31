@@ -1,5 +1,4 @@
-const User = require('../../models/user');
-const Admin = require('../../models/admin')
+const db = require('../../models');
 
 const passwordHelper = require('../../helpers/password_helper');
 const tokenHelper = require('../../helpers/token_helper');
@@ -13,7 +12,7 @@ exports.apiRegister =  (req, res) => {
 	passwordHelper
 		.bcryptPassword(password)
 		.then((hash) => {
-			return User.create({
+			return db.User.create({
 				username: username,
 				password: hash
 			});
@@ -36,7 +35,7 @@ exports.apiLogin = (req, res) => {
 	//do validation
 
 
-	User.findOne({
+	db.User.findOne({
 		where: { username }
 	})
 		.then((user) => {
@@ -71,7 +70,7 @@ exports.login = (req, res) => {
 
 exports.doLogin = (req, res) => {
 	const {username, password} = req.body;
-	Admin.findOne({
+	db.Admin.findOne({
 		where: { username },
 	})
 	.then(user => {

@@ -102,13 +102,31 @@ exports.restaurantInfoResponse = (restaurant) => [
 	}
 ];
 
+exports.moveToNextRestaurantResponse = () => {
+	return [
+		{
+			type: 'text',
+			content: `The location of next restaurant is shown on the map. Please follow the instruction to go to there.`
+		},
+	]
+}
+
 // exports.restaurantInfoResponse = (restaurant) => [
 // 	`The restaurant is call ${restaurant.name}. It is a ${restaurant.culture} restaurant.`,
 // 	`The popular dishes is ${restaurant.dishes}.`
 // ]
 
+exports.noNextRestaurantRepsonse = () => {
+	return [
+		{
+			type: 'text',
+			content: 'The is the last restaurant in this route. No futher restaurant will provider.'
+		}
+	]
+}
+
+
 exports.reachRestaurantResponse = (restaurant) => {
-	console.log(restaurant);
 	let response = [
 		{
 			type: 'text',
@@ -125,17 +143,22 @@ exports.reachRestaurantResponse = (restaurant) => {
 };
 
 exports.reachGeneralLocalKnowledgeResponse = (generalLocalKnowledge) => {
-	console.log(generalLocalKnowledge);
 	let response = [
 		{
 			type: 'text',
 			content: 'Hey, just a moment.'
 		}
 	];
-	let otherResponse = generalLocalKnowledge.splice('\n');
+	let otherResponse = generalLocalKnowledge.reminder.split('\n').map(item => {
+		return {
+			type: 'text',
+			content: item
+		};
+	});
 	console.log(otherResponse);
-	return response.concat(imageResponse);
+	return response.concat(otherResponse);
 };
+
 exports.reachLastResponse = () => {
 	return [
 		{

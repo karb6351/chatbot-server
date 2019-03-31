@@ -34,7 +34,11 @@ exports.findNextEventById = async (id) => {
           {
             model: db.Food,
             as: 'food'
-          }
+          },
+          {
+            model: db.Culture,
+            as: 'culture',
+          },
         ]
       }
     ]

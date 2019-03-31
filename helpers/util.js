@@ -12,8 +12,7 @@ exports.formatUserInfoLocation = (restaurant, event) => {
 	};
 };
 
-// Haversine formula
-exports.getDistanceFromLatLonInKm = (firstCoordinate, secondCoordinate) => {
+const getDistanceFromLatLonInKm = (firstCoordinate, secondCoordinate) => {
 	const lat1 = firstCoordinate.latitude;
 	const lon1 = firstCoordinate.longitude;
 	const lat2 = secondCoordinate.latitude;
@@ -29,6 +28,22 @@ exports.getDistanceFromLatLonInKm = (firstCoordinate, secondCoordinate) => {
 	return d;
 };
 
+// Haversine formula
+exports.getDistanceFromLatLonInKm = getDistanceFromLatLonInKm;
+
 const deg2rad = (deg) => {
 	return deg * (Math.PI / 180);
 };
+
+
+exports.getNearestLocation = (generalLocalKnowledges, location) => {
+	let nearestLocation = null;
+	nearestLocation = generalLocalKnowledges.reduce((min, current) =>{
+		const minCoor = JSON.parse(min.location);
+		const currentCoor = JSON.parse(current.location);
+		console.log(minCoor);
+		console.log(currentCoor);
+		return getDistanceFromLatLonInKm(location, minCoor) < getDistanceFromLatLonInKm(location, currentCoor) ? min : current;
+	}, generalLocalKnowledges[0]);
+	return nearestLocation;
+}
