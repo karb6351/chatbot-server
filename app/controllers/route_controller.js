@@ -1,5 +1,6 @@
 const sequelize = require('../services/sequelize_service');
 const db = require('../../models');
+const RouteRepository = require('../../repository/Route');
 
 const instruction = [
 	{
@@ -144,19 +145,18 @@ exports.delete = (req, res) => {
 		});
 };
 
-exports.apiGetRoutes = (req, res) => {
-	db.Route.findAll()
-		.then((routes) => {
-			return res.status(200).json({
-				status: true,
-				routes: routes
-			});
-		})
-		.catch((error) => {
-			console.log(error);
+exports.apiGetRoutes = async (req, res) => {
+	try{
+		const routes = await RouteRepository.findRoutes();
+		return res.status(200).json({
+			status: true,
+			routes: routes
+		});
+	}catch(error){
+		console.log(error);
 			return res.status(500).json({
 				status: false,
 				message: error.message
 			});
-		});
+	}
 };

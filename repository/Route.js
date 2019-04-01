@@ -20,3 +20,30 @@ exports.findRouteById = async (id) => {
     ]
   })
 }
+
+exports.findRoutes = async () => {
+  return await db.Route.findAll({
+    include: [
+      {
+        model: db.Event,
+        as: 'event',
+        order: [['order', 'asc']],
+        include: [
+          {
+            model: db.Restaurant,
+            include: [
+              {
+                model: db.Culture,
+                as: 'culture'
+              },
+              {
+                model: db.Food,
+                as: 'food'
+              },
+            ]
+          }
+        ]
+      }
+    ]
+  });
+}

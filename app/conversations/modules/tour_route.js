@@ -62,9 +62,9 @@ module.exports = class TourRoute extends BaseModule {
 				};
 
 			case 'get_info_of_next_location':
-				const nextLocation = user['location']['next'];
+				const nextLocation = user['location']['current'];
 				const event_id = nextLocation.event_id;
-				
+				const event = await EventRepository.findEventById(event_id);
 				const resultModel = {
 					name: event.Restaurant.name,
 					culture: event.Restaurant.culture[0].name,
