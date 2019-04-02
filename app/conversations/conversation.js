@@ -22,24 +22,30 @@ class Conversation {
   }
 
   async processWithMessage(intents, context, message){
+    const userInfo = UserActiveLogger.getUserInfo(this.userId);
     try{
-      const userInfo = UserActiveLogger.getUserInfo(this.userId);
       // use last intent to be current intent when lastIntent contains value(While mean topic not ended)
-      let intent = userInfo.lastIntent ? userInfo.lastIntent : intents ? intents[0].intent : null;
-      const moduleType = this.findModuleByIntent(intent);
+      // let intent = userInfo.lastIntent ? userInfo.lastIntent : intents ? intents[0].intent : null;
+      let intent = intents ? intents[0].intent : null;
+      console.log(userInfo.lastIntent);
+      const moduleType = this.findModuleByIntent(userInfo.lastIntent ? userInfo.lastIntent : intent);
 
       const payload = {}
       if (!moduleType){
         // use default module to handle
-        return 'test';
+        return {
+          messages: messageNotRecognizedResponse(),
+          restaurant: userInfo.location.current
+        }
       }else{
         const subModule = new (require(`./modules/${moduleType}`))(this.userId);
-        const response = await subModule.response(intents, context, message, payload, subModule.INTENT);
+        const response = await subModule.response(intent, context, message, payload, subModule.INTENT);
         return response;
       }
     }catch(error){
+      console.log(error);
       return {
-        message: messageNotRecognizedResponse(),
+        messages: messageNotRecognizedResponse(),
         restaurant: userInfo.location.current
       };
     }

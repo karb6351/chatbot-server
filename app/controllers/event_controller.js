@@ -41,7 +41,7 @@ exports.create = async (req, res) => {
 };
 
 exports.save = async (req, res) => {
-	const { duration, description, instruction, route_id, type, model_id } = req.body;
+	const { duration, description, instruction, route_id, type, model_id, color } = req.body;
 	try {
 		const lastEvent = await db.Event.findOne({
 			where: {
@@ -56,6 +56,7 @@ exports.save = async (req, res) => {
 			route_id,
 			type,
 			model_id,
+			color,
 			order: lastEvent ? lastEvent.order + 1 : 1
 		});
 	} catch (error) {
@@ -79,7 +80,7 @@ exports.edit = async (req, res) => {
 
 exports.update = async (req, res) => {
 	const { id } = req.params;
-	const { duration, description, instruction, route_id, type, model_id, order } = req.body;
+	const { duration, description, instruction, route_id, type, model_id, order, color } = req.body;
 	try {
 		const event = await db.Event.update({
 			duration,
@@ -88,7 +89,8 @@ exports.update = async (req, res) => {
 			route_id,
 			type,
 			model_id,
-			order: order
+			order: order,
+			color
 		},{
 			where: {id}
 		});

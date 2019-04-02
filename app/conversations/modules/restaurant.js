@@ -15,23 +15,66 @@ module.exports = class Restaurant extends BaseModule {
 			{
 				name: 'get_suggested_food',
 				responseAfterJoin: true
-			}
+			},
+			{
+				name: 'confirm_found_restaurant',
+				responseAfterJoin: true
+			},
 		];
 	}
 
 	async generateReponseWithIntent(intent, content, payload) {
-		switch (intent) {
-			case 'get_way_to_order_food':
-				return responseMessage.wayOfOrderFoodResponse('inside');
+		const user = UserActiveLogger.getUserInfo(this.userId);
+		switch (user.lastIntent ? user.lastIntent : intent) {
+			// case 'get_way_to_order_food':
+			// 	return responseMessage.wayOfOrderFoodResponse('inside');
+			case 'confirm_found_restaurant':
+				switch(intent){
+
+					case 'Bot_Control_Reject_Response':
+						UserActiveLogger.setState(this.userId, user.state + 1);
+						return {
+							messages: responseMessage.helpUserToFoundRestaurantResponse(user.location.current),
+							restaurant: user.location.current
+						}
+						
+					case 'Bot_Control_Approve_Response':
+						UserActiveLogger.setLastIntent(this.userId, null);
+						UserActiveLogger.setState(this.userId, 0);
+						return {
+							messages: responseMessage.giveRestaurantDetailResponse(user.location.current),
+							restaurant: user.location.current
+						}
+					default:
+						//get previous question and answer again, no need to update state
+						return {
+							messages: responseMessage.reachRestaurantResponse(user.location.current),
+							restaurant: user.location.current
+						}
+				}
 			case 'get_suggested_food':
-				const userInfo = UserActiveLogger.getUserInfo(this.userId);
-				return responseMessage.wayOfOrderFoodResponse('inside');
+				return {
+					messages: responseMessage.wayOfOrderFoodResponse('inside'),
+					restaurant: user.location.current
+				};
 		}
 	}
 
 	async generateReponseWithCoordinate() {
 		const userInfo = UserActiveLogger.getUserInfo(this.userId);
-		const event = await EventRepository.findEventById(userInfo.currentEventId);
-		return responseMessage.reachRestaurantResponse(event.Restaurant)
+		try{
+			UserActiveLogger.setLastIntent(this.userId, 'confirm_found_restaurant');
+			const event = await EventRepository.findEventById(userInfo.currentEventId);
+			const messages = responseMessage.reachRestaurantResponse(event.Restaurant);
+			console.log(messages);
+			return {
+				messages: messages,
+				restaurant: userInfo.location.current
+			}
+		}catch(error){
+			console.log(error);
+
+		}
+		
 	}
 };

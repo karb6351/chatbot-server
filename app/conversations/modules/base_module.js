@@ -9,10 +9,9 @@ module.exports = class BaseModule {
 		this.COORDINATE = 2;
 	}
 
-	async response(intents, context, message, payload, type) {
+	async response(intent, context, message, payload, type) {
 		try {
 			if (type === this.INTENT){
-				const intent = intents[0].intent;
 				if (!this.validUserStatusAndIntent(intent, UserActiveLogger.isJoined(this.userId))) throw Error();
 				return await this.generateReponseWithIntent(intent, context, payload);
 			}else if (type === this.CONTEXT){
@@ -23,7 +22,10 @@ module.exports = class BaseModule {
 			
 		} catch (error) {
 			console.log(error);
-			return messageNotRecognizedResponse();
+			return {
+				messages: messageNotRecognizedResponse(),
+				restaurant: UserActiveLogger.getUserInfo(this.userId).location.current
+			};
 		}
 	}
 	validUserStatusAndIntent(intent) {

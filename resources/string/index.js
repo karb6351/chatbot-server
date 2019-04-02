@@ -2,6 +2,76 @@ const os = require('os');
 
 exports.greetingResponse = () => [ { type: 'text', content: 'Hello. How can I help you?' } ];
 
+exports.confirmResponse = () => {
+	return [
+		{
+			type: 'text',
+			content: 'Are you sure?'
+		}
+	]
+}
+
+exports.appreciateResponse = () => {
+	return [
+		{
+			type: "text",
+			content: 'You are welcome!.'
+		}
+	]
+}
+
+exports.wayToStartResponse = () => {
+	return [
+		{
+			type: 'text',
+			content: 'Switch the screen to route list by the route button in bottom navigation bar.'
+		},
+		{
+			type: 'text',
+			content: 'Then, you will see a list of food route. Select a food route which you are interest.'
+		},
+		{
+			type: 'text',
+			content: 'Then you can start your journey.'
+		},
+		
+	]
+}
+
+exports.rejectGoToNextLocationResponse = () => {
+	return [
+		{
+			type: 'text',
+			content: 'Okay. Free feel to tell me once you are ready to move on.'
+		}
+	]
+}
+
+exports.helpUserToFoundRestaurantResponse = () => {
+	return [
+		{
+			type: 'text',
+			content: 'Oops, please take a look the following photos. Can you find the restaurant ? '
+		}
+	]
+}
+
+exports.giveRestaurantDetailResponse = (restaurant) => {
+
+	console.log(restaurant);
+	let messages = [
+		{
+			type: 'text',
+			content: `Great! let me tell you some culture/information about this restaurant.`
+		}
+	];
+	let otherMessages = restaurant.description.split('\n').map(item => ({
+		type: 'text',
+		content: item
+	}));
+	return messages.concat(otherMessages);
+}
+
 exports.initResponse = () => [
 	{
 		type: 'text',
@@ -17,12 +87,16 @@ exports.initResponse = () => [
 	},
 	{
 		type: 'text',
-		content: 'Select one of them that you are interested, you can find more detail by click the "View" button'
+		content: 'Select one of them that you are interested.'
 	},
-	{
-		type: 'text',
-		content: "In the detail page, if you interest that food route, click the 'Join' button to join the journey."
-	}
+	// {
+	// 	type: 'text',
+	// 	content: 'Select one of them that you are interested, you can find more detail by click the "View" button'
+	// },
+	// {
+	// 	type: 'text',
+	// 	content: "In the detail page, if you interest that food route, click the 'Join' button to join the journey."
+	// }
 ];
 
 // exports.initResponse = () => [
@@ -65,11 +139,11 @@ exports.joinRouteResponse = (route) => [
 		type: 'text',
 		content: 'You can follow the instruction in the map to go to the restaurant'
 	},
-	{
-		type: 'text',
-		content:
-			'If you have any question, feel free to ask me. You can ask me How many places will I go today? How long will I take of next location? Or tell me something about the next restaurant.'
-	}
+	// {
+	// 	type: 'text',
+	// 	content:
+	// 		'If you have any question, feel free to ask me. You can ask me How many places will I go today? How long will I take of next location? Or tell me something about the next restaurant.'
+	// }
 ];
 
 // exports.joinRouteResponse = (route) => [

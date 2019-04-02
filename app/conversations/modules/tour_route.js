@@ -38,11 +38,15 @@ module.exports = class TourRoute extends BaseModule {
 	}
 
 	async generateReponseWithIntent(intent, content, payload) {
-		let user = userActiveLogger.getUserInfo(this.userId);
-		switch (intent) {
-
+		const user = userActiveLogger.getUserInfo(this.userId);
+		let state = user.state;
+		console.log(user.route_id);
+		switch (user.lastIntent ? user.lastIntent : intent) {
 			case 'get_number_of_location_in_path':
-				const route = RouteRepository.findRouteById(user.route_id);
+				const route = await RouteRepository.findRouteById(user.route_id);
+				console.log(user.route_id);
+				console.log(route);
+				userActiveLogger.setState(this.userId, 0);
 				return {
 					messsages: responseMessage.numberOfRestaurant(route.event.length),
 					restaurant: user.location.current
@@ -52,7 +56,8 @@ module.exports = class TourRoute extends BaseModule {
 				let origin = user['currentCoordinate'];
 				let destination = user['location'].next;
         let { data } = await GoogleApi.distanceMatrix(origin, destination.coordinate);
-        let { distance, duration } = data.rows[0].elements[0];
+				let { distance, duration } = data.rows[0].elements[0];
+				userActiveLogger.setState(this.userId, 0);
 				return {
 					messages: responseMessage.remainDistanceAndDuractionResponse({
 						distance: distance.text,
@@ -65,6 +70,7 @@ module.exports = class TourRoute extends BaseModule {
 				const nextLocation = user['location']['current'];
 				const event_id = nextLocation.event_id;
 				const event = await EventRepository.findEventById(event_id);
+				userActiveLogger.setState(this.userId, 0);
 				const resultModel = {
 					name: event.Restaurant.name,
 					culture: event.Restaurant.culture[0].name,
@@ -77,23 +83,54 @@ module.exports = class TourRoute extends BaseModule {
 				};
 			
 			case 'go_to_next_location':
-				const nextRestaurant = await userActiveLogger.moveToNextRestaurant(this.userId);
-				if (!nextRestaurant){
+				if (state == 0){
+					userActiveLogger.setState(this.userId, state + 1);
+					userActiveLogger.setLastIntent(this.userId, intent);
+					console.log(userActiveLogger.getUserInfo(this.userId).state);
 					return {
-						messages: responseMessage.noNextRestaurantRepsonse(),
+						messages: responseMessage.confirmResponse(),
 						restaurant: user.location.current
-					}
-				}else{
-					return {
-						messages: responseMessage.moveToNextRestaurantResponse(),
-						restaurant: nextRestaurant
+					};
+				}else if (state == 1) {
+					
+					switch (intent) {
+						case 'Bot_Control_Reject_Response':
+							userActiveLogger.setLastIntent(this.userId, null);
+							userActiveLogger.setState(this.userId, 0);
+							return {
+								messages: responseMessage.rejectGoToNextLocationRespons(),
+								restaurant: user.location.current
+							}
+							
+						case 'Bot_Control_Approve_Response':
+							userActiveLogger.setLastIntent(this.userId, null);
+							const nextRestaurant = await userActiveLogger.moveToNextRestaurant(this.userId);
+							userActiveLogger.setState(this.userId, 0);
+							if (!nextRestaurant){
+								return {
+									messages: responseMessage.noNextRestaurantRepsonse(),
+									restaurant: user.location.current
+								}
+							}else{
+								return {
+									messages: responseMessage.moveToNextRestaurantResponse(),
+									restaurant: nextRestaurant
+								}
+							}
+						default:
+							//get previous question and answer again, no need to update state
+							return {
+								messages: responseMessage.confirmResponse(),
+								restaurant: user.location.current
+							}
 					}
 				}
+				
 
 			// example for mutiple step of conversation flow
 			case 'test_intent':
 				let messages = [];
-				const state = userActiveLogger.getUserInfo(this.userId).state;
+				
 				if (state == 0) {
 					messages = [ 'message' ];
 					userActiveLogger.setState(this.userId, state + 1);
@@ -115,6 +152,11 @@ module.exports = class TourRoute extends BaseModule {
 					messages = responseMessage.messageNotRecognizedResponse();
 				}
 				return messages;
+			default:
+				return {
+					messages: responseMessage.messageNotRecognizedResponse(),
+					restaurant: user.location.current
+				}
 		}
 	}
 };

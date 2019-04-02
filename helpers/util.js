@@ -3,6 +3,7 @@ exports.storageUrlBuilder = (filename) => '/storage/' + filename;
 exports.formatUserInfoLocation = (restaurant, event) => {
 	return {
 		name: restaurant.name,
+		description: restaurant.description,
 		coordinate: {
 			latitude: JSON.parse(restaurant.location).lat,
 			longitude: JSON.parse(restaurant.location).lng

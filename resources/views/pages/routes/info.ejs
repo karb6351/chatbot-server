@@ -15,8 +15,8 @@
               <th>Order</th>
               <th>Duration</th>
               <th>Instruction</th>
-              <th>Type</th>
-              <th>Type Model Name</th>
+              <th>Color</th>
+              <th>Restaurant Name</th>
               <th>Location</th>
               <th>Actions</th>
           </thead>
@@ -26,7 +26,7 @@
                   <td><%= index %></td>
                   <td><%= event.duration %></td>
                   <td><%= instruction.filter(item => event.instruction == item.id)[0].value %></td>
-                  <td><%= event.type %></td>
+                  <td><div class="color" style="background-color: <%= event.color %>;"></div></td>
                   <td><%= event.type === 'restaurant' ? event.Restaurant.name : event.GeneralLocalKnowledge.name %></td>
                   <td><%= event.type === 'restaurant' ? event.Restaurant.location : event.GeneralLocalKnowledge.location %></td>
                   <td>  

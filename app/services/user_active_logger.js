@@ -34,7 +34,7 @@ class UserActiveLogger {
 				last: '',
 				current: '',
 			},
-			state: null
+			state: 0
 		};
 	}
 

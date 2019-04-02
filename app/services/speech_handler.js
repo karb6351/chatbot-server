@@ -21,14 +21,22 @@ exports.process_message = async (id, previousIntent, { input, intents, entities,
 		return messageObj;
 	} catch (error) {
 		console.error(error);
+		const messageObj = {
+			messages: [],
+			context: null,
+			intent: null,
+			restaurant: userActiveLogger.getUserInfo(id).location.current
+		};
+		return messageObj;
 	}
 };
 
 exports.process_location = async (id, previousIntent, context, type) => {
 	let messages = [];
+	let messageObj = {};
 	try {
 		const conversation = new Conversation(id);
-		messages = await conversation.processWithCoordinate(null, type);
+		messageObj = await conversation.processWithCoordinate(null, type);
 		userActiveLogger.addHistory(id, {
 			question: null,
 			answer: messages,
@@ -40,8 +48,8 @@ exports.process_location = async (id, previousIntent, context, type) => {
 		console.error(error);
 	}
 
-	const messageObj = {
-		messages: messages,
+	messageObj = {
+		...messageObj,
 		context: context,
 		intent: null
 	};

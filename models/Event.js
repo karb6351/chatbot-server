@@ -1,9 +1,5 @@
 // 'use strict';
 const Sequelize = require('sequelize');
-const sequelize = require('../app/services/sequelize_service');
-
-const Restaurant = sequelize.import('./restaurant');
-const GeneralLocalKnowledge = sequelize.import('./generallocalknowledge');
 
 const type = [ 
   {
@@ -41,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
 			duration: DataTypes.INTEGER,
 			order: DataTypes.INTEGER,
 			type: DataTypes.ENUM(type[0].value, type[1].value),
+			color: DataTypes.STRING,
 			route_id: DataTypes.INTEGER,
 			model_id: DataTypes.INTEGER
 		},

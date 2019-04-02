@@ -50,14 +50,19 @@ exports.message = async (req, res) => {
 	try{
 		const response = await watsonService.message(message, context);
 		let messageObj = await SpeechHandler.process_message(id, intent, response);
-		messageObj.messages = messageHelper.build(messageObj.messages, messageHelper.CHATBOT); 
+		const event = await EventRepostory.findEventById(userActiveLogger.getUserInfo(id).currentEventId);
 		console.log(messageObj);
-		res.status(200).json(messageObj);
+		messageObj.messages = messageHelper.build(messageObj.messages, messageHelper.CHATBOT); 
+		res.status(200).json({
+			...messageObj,
+			event: event
+		});
 	}catch(error){
 		console.error(error);
 		res.status(404).json(error);
 	}
 };
+
 
 exports.join = async (req, res) => {
 	const { userData: { id } } = req;
@@ -81,11 +86,16 @@ exports.join = async (req, res) => {
 		const restaurant = await userActiveLogger.moveToNextRestaurant(id);
 		
 		const messages = messageHelper.build(responseMessage.joinRouteResponse(route), messageHelper.CHATBOT);
+
+		const event = await EventRepostory.findEventById(userActiveLogger.getUserInfo(id).currentEventId);
+
 		res.status(200).json({
 			messages: messages,
 			restaurant: restaurant,
+			event: route.event[0],
 			intent: null,
 			content: null,
+			event: event
 		});
 
 	}catch(error){
@@ -106,6 +116,7 @@ exports.updateLocation = async (req, res) => {
 	const currentLocation = userInfo.location['current'];
 	let messages = [];
 	let hasEvent = false;
+	let event = null;
 	// check user is reach restaurant
 	if (currentLocation && currentLocation !== '') {
 		// check user is close to restaurant in 10m
@@ -113,7 +124,9 @@ exports.updateLocation = async (req, res) => {
 			try {
 				
 				const nextEvent = await EventRepostory.findNextEventById(userInfo.currentEventId);
+				
 				let isLast = nextEvent ? false : true;
+				event = isLast ? null : nextEvent;
 				// userActiveLogger.moveToNextRestaurant(id);
 				let extenalMessage = [];
 				if (isLast){
@@ -152,6 +165,7 @@ exports.updateLocation = async (req, res) => {
 		status: true,
 		location: location,
 		messages: messages,
-		hasEvent: hasEvent 
+		hasEvent: hasEvent,
+		event: event
 	});
 };
