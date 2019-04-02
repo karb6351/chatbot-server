@@ -1,5 +1,3 @@
-const os = require('os');
-
 exports.greetingResponse = () => [ { type: 'text', content: 'Hello. How can I help you?' } ];
 
 exports.confirmResponse = () => {
@@ -15,7 +13,7 @@ exports.appreciateResponse = () => {
 	return [
 		{
 			type: "text",
-			content: 'You are welcome!.'
+			content: 'You are welcome!'
 		}
 	]
 }
@@ -24,11 +22,11 @@ exports.wayToStartResponse = () => {
 	return [
 		{
 			type: 'text',
-			content: 'Switch the screen to route list by the route button in bottom navigation bar.'
+			content: 'Tap the \"Route\" button in below navigation bar.'
 		},
 		{
 			type: 'text',
-			content: 'Then, you will see a list of food route. Select a food route which you are interest.'
+			content: 'You will see a list of food route. Select a food route which you are interest.'
 		},
 		{
 			type: 'text',
@@ -99,14 +97,6 @@ exports.initResponse = () => [
 	// }
 ];
 
-// exports.initResponse = () => [
-// 	'Hello, I am your food tour guide! Thank you for choosing our service.',
-// 	'Before the start of the journey, please choose a food route which you are interested!',
-// 	'Click the "Route" buttom in the bottom, you will see a list of food route that we are provided.',
-// 	'Select one of them that you are interested, you can find more detail by click the "View" button',
-// 	"In the detail page, if you interest that food route, click the 'Join' button to join the journey."
-// ];
-
 exports.wayOfOrderFoodResponse = (type = 'take_away', food) => {
 	if (type === 'take_away'){
 		return [
@@ -146,24 +136,12 @@ exports.joinRouteResponse = (route) => [
 	// }
 ];
 
-// exports.joinRouteResponse = (route) => [
-// 	`${route.title} is awesome! Hope you can enjoy the foods.`,
-// 	'Let start our journey, the location of restaurant is shown on the map.',
-// 	'Click the map button on the top of the screen to open the map.',
-// 	'You can follow the instruction in the map to go to the restaurant',
-// 	'If you have any question, feel free to ask me. You can ask me How many places will I go today? How long will I take of next location? Or tell me something about the next restaurant.'
-// ];
-
 exports.remainDistanceAndDuractionResponse = ({ distance, duration }) => [
 	{
 		type: 'text',
 		content: `We still have ${distance} from the restaurant. It takes about ${duration}`
 	}
 ];
-
-// exports.remainDistanceAndDuractionResponse = ({ distance, duration }) => [
-// 	`We still have ${distance} from the restaurant. It takes about ${duration}`
-// ];
 
 exports.restaurantInfoResponse = (restaurant) => [
 	{
@@ -184,11 +162,6 @@ exports.moveToNextRestaurantResponse = () => {
 		},
 	]
 }
-
-// exports.restaurantInfoResponse = (restaurant) => [
-// 	`The restaurant is call ${restaurant.name}. It is a ${restaurant.culture} restaurant.`,
-// 	`The popular dishes is ${restaurant.dishes}.`
-// ]
 
 exports.noNextRestaurantRepsonse = () => {
 	return [
@@ -249,8 +222,6 @@ exports.messageNotRecognizedResponse = () => [
 	}
 ];
 
-// exports.messageNotRecognizedResponse = () => [ "I don't know what you are talking about" ];
-
 exports.numberOfRestaurant = (count, restaurants) => [
 	{
 		type: 'text',
@@ -258,17 +229,9 @@ exports.numberOfRestaurant = (count, restaurants) => [
 	}
 ];
 
-// exports.numberOfRestaurant = (count, restaurants) => {
-// 	return [ `We will visit ${count} restaurant today.` ];
-// };
-
 exports.serverErrorResponse = () => [
 	{
 		type: 'text',
 		content: 'Oh! It seems something wrong in server. Please open the app again.'
 	}
 ];
-
-// exports.serverErrorResponse = () => {
-// 	return [ 'Oh! It seems something wrong in server. Please open the app again.' ];
-// };

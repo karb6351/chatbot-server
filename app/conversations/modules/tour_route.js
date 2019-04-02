@@ -40,23 +40,21 @@ module.exports = class TourRoute extends BaseModule {
 	async generateReponseWithIntent(intent, content, payload) {
 		const user = userActiveLogger.getUserInfo(this.userId);
 		let state = user.state;
-		console.log(user.route_id);
 		switch (user.lastIntent ? user.lastIntent : intent) {
 			case 'get_number_of_location_in_path':
-				const route = await RouteRepository.findRouteById(user.route_id);
-				console.log(user.route_id);
-				console.log(route);
+				const route = await RouteRepository.findRouteById(user.routeId);
 				userActiveLogger.setState(this.userId, 0);
 				return {
-					messsages: responseMessage.numberOfRestaurant(route.event.length),
+					messages: responseMessage.numberOfRestaurant(route.event.length),
 					restaurant: user.location.current
 				};
 
 			case 'get_duration_to_next_location':
 				let origin = user['currentCoordinate'];
-				let destination = user['location'].next;
+				let destination = user.location.current;
         let { data } = await GoogleApi.distanceMatrix(origin, destination.coordinate);
 				let { distance, duration } = data.rows[0].elements[0];
+				console.log(data);
 				userActiveLogger.setState(this.userId, 0);
 				return {
 					messages: responseMessage.remainDistanceAndDuractionResponse({
