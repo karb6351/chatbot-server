@@ -70,6 +70,65 @@ exports.giveRestaurantDetailResponse = (restaurant) => {
 	return messages.concat(otherMessages);
 }
 
+exports.getSuggestedFood = (food) => {
+	let messages = [
+		{
+			type: 'text',	
+			content: `I suggest ${food.name}`
+		},
+		{
+			type: 'text',	
+			content: `${food.description}`
+		},
+		{
+			type: 'text',	
+			content: `Here is some photos`
+		}
+	];
+	let otherMessages = [];
+	otherMessages = JSON.parse(food.photos).map(item => {
+		return {
+			type: 'image',
+			content: `http://192.168.2.182:8000/${item.dataURL}`
+		}
+	})
+	return messages.concat(otherMessages);
+}
+
+exports.getOtherSuggestedFood = (food) => {
+	const messages = [
+		{
+			type: 'text',
+			content: `Okay. I may suggest ${food.name}`
+		},
+		{
+			type: 'text',
+			content: `${food.description}`
+		},
+		{
+			type: 'text',	
+			content: `Here is some photos`
+		}
+	];
+	let otherMessages = [];
+	otherMessages = JSON.parse(food.photos).map(item => {
+		return {
+			type: 'image',
+			content: `http://192.168.2.182:8000/${item.dataURL}`
+		}
+	});
+	return messages.concat(otherMessages);
+}
+
+exports.noOtherSuggestedFooddResponse = () => {
+	return [
+		{
+			type: 'text',
+			content: 'Sorry, i think there is no more recommened food.'
+		}
+	]
+}
+
 exports.initResponse = () => [
 	{
 		type: 'text',

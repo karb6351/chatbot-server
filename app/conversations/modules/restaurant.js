@@ -17,6 +17,10 @@ module.exports = class Restaurant extends BaseModule {
 				responseAfterJoin: true
 			},
 			{
+				name: 'get_other_suggested_food',
+				responseAfterJoin: true
+			},
+			{
 				name: 'confirm_found_restaurant',
 				responseAfterJoin: true
 			},
@@ -25,6 +29,7 @@ module.exports = class Restaurant extends BaseModule {
 
 	async generateReponseWithIntent(intent, content, payload) {
 		const user = UserActiveLogger.getUserInfo(this.userId);
+		let event = null;
 		switch (user.lastIntent ? user.lastIntent : intent) {
 			// case 'get_way_to_order_food':
 			// 	return responseMessage.wayOfOrderFoodResponse('inside');
@@ -53,10 +58,24 @@ module.exports = class Restaurant extends BaseModule {
 						}
 				}
 			case 'get_suggested_food':
+				event = await EventRepository.findEventById(user.currentEventId);
 				return {
-					messages: responseMessage.wayOfOrderFoodResponse('inside'),
+					messages: responseMessage.getSuggestedFood(event.Restaurant.food[0]),
 					restaurant: user.location.current
 				};
+			case 'get_other_suggested_food':
+				event = await EventRepository.findEventById(user.currentEventId);
+				if (event.Restaurant.food.length > 1){
+					return {
+						messages: responseMessage.getOtherSuggestedFood(event.Restaurant.food[1]),
+						restaurant: user.location.current
+					};					
+				}else{
+					return {
+						messages: responseMessage.noOtherSuggestedFooddResponse(),
+						restaurant: user.location.current
+					};
+				}
 		}
 	}
 
