@@ -1,5 +1,5 @@
 const db = require('../../models');
-const RouteRepostory = require('../../repository/Route');
+const RouteRepostory = require('../../repository/route');
 const EventRepostory = require('../../repository/event');
 const GeneralLocalKnowledgeRepostory = require('../../repository/GeneralLocalKnowledge');
 
