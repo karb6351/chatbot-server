@@ -1,12 +1,15 @@
 const Sequelize = require('sequelize');
 
+const env = process.env.NODE_ENV || 'development';
+const config = require('../../config/config')[env];
+
 const sequelize = new Sequelize(
-	`${process.env.DB_DATABASE}`,
-	`${process.env.DB_USERNAME}`,
-	`${process.env.DB_PASSWORD}`,
+	`${config.database}`,
+	`${config.username}`,
+	`${config.password}`,
 	{
-		dialect: `${process.env.DB_DIALECT}`,
-		host: `${process.env.DB_HOST}`,
+		dialect: `${config.dialect}`,
+		host: `${config.host}`,
 		define: {
 			charset: 'utf8',
 			collate: 'utf8_general_ci', 
