@@ -1,5 +1,5 @@
 const db = require('../../models');
-const EventRepository = require('../../repository/Event');
+const EventRepository = require('../../repository/event');
 const RouteRepository = require('../../repository/route');
 const { formatUserInfoLocation } = require('../../helpers/util');
 
