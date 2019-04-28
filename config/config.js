@@ -24,8 +24,8 @@ module.exports = {
     // pool configuration used to pool database connections
     pool: {
       max: 5,
-      idle: 30000,
-      acquire: 60000,
+      idle: 300000,
+      acquire: 600000,
     },
   }
 }
