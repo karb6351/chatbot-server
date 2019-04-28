@@ -19,9 +19,9 @@ const startSocket = require('./socket');
 const methodOverride = require('method-override')
 
 // webpack setup
-const webpack = require('webpack');
-const webpackDevMiddleware = require('webpack-dev-middleware');
-const webpackConfig = require('./config/webpack.config');
+// const webpack = require('webpack');
+// const webpackDevMiddleware = require('webpack-dev-middleware');
+// const webpackConfig = require('./config/webpack.config');
 // webpack(webpackConfig)
 // app.use(webpackDevMiddleware(webpack(webpackConfig)))
 
