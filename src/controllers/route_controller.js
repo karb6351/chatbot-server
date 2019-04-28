@@ -1,6 +1,6 @@
 const sequelize = require('../services/sequelize_service');
 const db = require('../../models');
-const RouteRepository = require('../../repository/r');
+const RouteRepository = require('../../repository/Route');
 
 const instruction = [
 	{

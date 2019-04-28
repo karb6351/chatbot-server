@@ -1,6 +1,4 @@
 const db = require('../../models');
-const Event = require('../../models/event');
-const util = require('../../helpers/util');
 
 const type = [
 	{
