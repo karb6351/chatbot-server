@@ -86,7 +86,7 @@ app.use(
 	}
 );
 
-const server = app.listen(process.env.APP_PORT || 8000, () => {
+const server = app.listen(process.env.PORT || 8000, () => {
 	console.log('Server is running...');
 });
 
