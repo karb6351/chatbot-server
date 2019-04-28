@@ -1,10 +1,10 @@
 const router = require('express').Router();
 
 
-const authMiddleware = require('../../app/middlewares/authApi');
-const chatController = require('../../app/controllers/chatbot_controller');
-const authenticationController = require('../../app/controllers/authentication_controller');
-const routeController = require('../../app/controllers/route_controller');
+const authMiddleware = require('../../src/middlewares/authApi');
+const chatController = require('../../src/controllers/chatbot_controller');
+const authenticationController = require('../../src/controllers/authentication_controller');
+const routeController = require('../../src/controllers/route_controller');
 
 //add router group(api) to express module
 

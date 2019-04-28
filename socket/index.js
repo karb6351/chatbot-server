@@ -1,8 +1,8 @@
-const userOnlineLogger = require('../app/services/user_online_logger');
-const userActiveLogger = require('../app/services/user_active_logger');
+const userOnlineLogger = require('../src/services/user_online_logger');
+const userActiveLogger = require('../src/services/user_active_logger');
 
-const WatsonService = require('../app/services/watson_service');
-const SpeechHandler = require('../app/services/speech_handler');
+const WatsonService = require('../src/services/watson_service');
+const SpeechHandler = require('../src/services/speech_handler');
 
 const watsonService = new WatsonService();
 

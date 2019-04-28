@@ -1,18 +1,18 @@
 const router = require('express').Router();
 
 const upload = require('../../config/multer');
-const authMiddleware = require('../../app/middlewares/auth');
+const authMiddleware = require('../../src/middlewares/auth');
 // const authMiddleware = require('../../app/middlewares/authApi');
 
-const authenticationController = require("../../app/controllers/authentication_controller");
-const fileController = require('../../app/controllers/file_controller');
-const homeController = require('../../app/controllers/home_controller');
-const routeController = require('../../app/controllers/route_controller');
-const cultureController = require('../../app/controllers/culture_controller');
-const foodController = require('../../app/controllers/food_controller');
-const eventController = require('../../app/controllers/event_controller');
-const restaurantController = require('../../app/controllers/restaurant_controller');
-const generallocalknowledgeController = require('../../app/controllers/generallocalknowledge_controller');
+const authenticationController = require("../../src/controllers/authentication_controller");
+const fileController = require('../../src/controllers/file_controller');
+const homeController = require('../../src/controllers/home_controller');
+const routeController = require('../../src/controllers/route_controller');
+const cultureController = require('../../src/controllers/culture_controller');
+const foodController = require('../../src/controllers/food_controller');
+const eventController = require('../../src/controllers/event_controller');
+const restaurantController = require('../../src/controllers/restaurant_controller');
+const generallocalknowledgeController = require('../../src/controllers/generallocalknowledge_controller');
 
 router.use(authMiddleware);
 

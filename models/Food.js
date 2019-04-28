@@ -1,6 +1,6 @@
 
 const Sequelize = require('sequelize');
-const sequelize = require('../app/services/sequelize_service');
+const sequelize = require('../src/services/sequelize_service');
 
 module.exports = (sequelize, DataTypes) => {
   class Food extends Sequelize.Model{}

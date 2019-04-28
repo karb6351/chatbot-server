@@ -1,4 +1,4 @@
-const userActiveLogger = require('../services/user_active_logger');
+const userActiveLogger = require('./user_active_logger');
 const Conversation = require('../conversations/conversation');
 
 exports.process_message = async (id, previousIntent, { input, intents, entities, output, context }) => {
