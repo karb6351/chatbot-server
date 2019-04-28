@@ -20,7 +20,13 @@ module.exports = {
     database: process.env.PROD_DB_DATABASE,
     host: process.env.PROD_DB_HOST,
     dialect: process.env.PROD_DB_DIALECT,
-    port: process.env.PROD_DB_PORT
+    port: process.env.PROD_DB_PORT,
+    // pool configuration used to pool database connections
+    pool: {
+      max: 5,
+      idle: 30000,
+      acquire: 60000,
+    },
   }
 }
 
