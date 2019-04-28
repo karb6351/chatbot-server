@@ -1,3 +1,5 @@
+const { storageUrlBuilder } = require('../../helpers/util');
+
 exports.greetingResponse = () => [ { type: 'text', content: 'Hello. How can I help you?' } ];
 
 exports.confirmResponse = () => {
@@ -89,7 +91,8 @@ exports.getSuggestedFood = (food) => {
 	otherMessages = JSON.parse(food.photos).map(item => {
 		return {
 			type: 'image',
-			content: `http://192.168.2.182:8000/${item.dataURL}`
+			// content: `http://192.168.2.182:8000/${item.dataURL}`
+			content: storageUrlBuilder(item.dataURL)
 		}
 	})
 	return messages.concat(otherMessages);
@@ -114,7 +117,8 @@ exports.getOtherSuggestedFood = (food) => {
 	otherMessages = JSON.parse(food.photos).map(item => {
 		return {
 			type: 'image',
-			content: `http://192.168.2.182:8000/${item.dataURL}`
+			// content: `http://192.168.2.182:8000/${item.dataURL}`
+			content: storageUrlBuilder(item.dataURL)
 		}
 	});
 	return messages.concat(otherMessages);
@@ -195,6 +199,15 @@ exports.joinRouteResponse = (route) => [
 	// }
 ];
 
+exports.wrongDirectionResponse = () => {
+	return [
+		{
+			type: 'text',
+			content: `Hey! you are in the wrong direction. Please double check the map again.`
+		}
+	]
+}
+
 exports.remainDistanceAndDuractionResponse = ({ distance, duration }) => [
 	{
 		type: 'text',
@@ -242,7 +255,8 @@ exports.reachRestaurantResponse = (restaurant) => {
 	let imageResponse = JSON.parse(restaurant.photos).map(item => {
 		return {
 			type: 'image',
-			content: `http://192.168.2.182:8000/${item.dataURL}`
+			// content: `http://192.168.2.182:8000/${item.dataURL}`
+			content: storageUrlBuilder(item.dataURL)
 		};
 	})
 	return response.concat(imageResponse);

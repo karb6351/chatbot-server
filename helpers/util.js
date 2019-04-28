@@ -1,4 +1,11 @@
-exports.storageUrlBuilder = (filename) => '/storage/' + filename;
+
+
+exports.storageUrlBuilder = (filename) => {
+	const domain = process.env.NODE_ENV == 'production' ? 
+			process.env.APP_PROD_URL :
+			process.env.APP_URL + ( ":" + process.env.APP_PORT || ":8000")
+	return domain + filename;
+}
 
 exports.formatUserInfoLocation = (restaurant, event) => {
 	return {
@@ -40,11 +47,21 @@ const deg2rad = (deg) => {
 exports.getNearestLocation = (generalLocalKnowledges, location) => {
 	let nearestLocation = null;
 	nearestLocation = generalLocalKnowledges.reduce((min, current) =>{
-		const minCoor = JSON.parse(min.location);
-		const currentCoor = JSON.parse(current.location);
-		console.log(minCoor);
-		console.log(currentCoor);
-		return getDistanceFromLatLonInKm(location, minCoor) < getDistanceFromLatLonInKm(location, currentCoor) ? min : current;
+		let minCoor = JSON.parse(min.location);
+		let currentCoor = JSON.parse(current.location);
+		console.log("min: " + minCoor)
+		console.log("current: " + currentCoor)
+		let locateToMinDis = getDistanceFromLatLonInKm(location, {
+			latitude: minCoor.lat,
+			longitude: minCoor.lng
+		});
+		let locateToCurrDis = getDistanceFromLatLonInKm(location, {
+			latitude: currentCoor.lat,
+			longitude: currentCoor.lng
+		});
+		console.log("min dis " + locateToMinDis);
+		console.log("curr dis " + locateToCurrDis);
+		return locateToMinDis < locateToCurrDis ? min : current;
 	}, generalLocalKnowledges[0]);
 	return nearestLocation;
 }

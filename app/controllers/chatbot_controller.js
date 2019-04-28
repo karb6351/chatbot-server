@@ -19,7 +19,7 @@ const messageHelper = require('../../helpers/response_message_helper');
 exports.init = async (req, res) => {
 	const { username, identifier } = req.body;
 	try{
-		const user = await db.User.findOne({where: {identifier}});
+		let user = await db.User.findOne({where: {identifier}});
 		if (!user) {
 			user = await db.User.create({
 				username: username ? username : 'guest',
@@ -122,9 +122,7 @@ exports.updateLocation = async (req, res) => {
 		// check user is close to restaurant in 10m
 		if (getDistanceFromLatLonInKm(location, currentLocation.coordinate) < 0.01) {
 			try {
-				
 				const nextEvent = await EventRepostory.findNextEventById(userInfo.currentEventId);
-				
 				let isLast = nextEvent ? false : true;
 				event = isLast ? null : nextEvent;
 				// userActiveLogger.moveToNextRestaurant(id);
@@ -145,22 +143,33 @@ exports.updateLocation = async (req, res) => {
 				if (generalLocalKnowledges.length !== 0){
 					const nearestLocation = getNearestLocation(generalLocalKnowledges, location);
 					const nearestLocationCoordinate = JSON.parse(nearestLocation.location);
-					
+					// console.log(nearestLocation);
+					// console.log(getDistanceFromLatLonInKm(location, {
+					// 	latitude: nearestLocationCoordinate.lat,
+					// 	longitude: nearestLocationCoordinate.lng
+					// }));
 					if (nearestLocation && getDistanceFromLatLonInKm(location, {
 						latitude: nearestLocationCoordinate.lat,
 						longitude: nearestLocationCoordinate.lng
 					}) < 0.01){
 						messageObj = await SpeechHandler.process_location(id, null, null, 'general_local_knowledge');
+						console.log(messageObj);
 						messages = messageHelper.build(messageObj.messages, messageHelper.CHATBOT); 
 						hasEvent = true;
 					}
 				}
 			}catch(error){
 				console.log(error);
+				return res.status(500).json({
+					status: false,
+					message: error.message
+				})
 			}
 		}
+		// check user is in wrong direction
+		// messages = messageHelper.build(responseMessage.wrongDirectionResponse(), messageHelper.CHATBOT); 
+		// hasEvent = true;
 	}
-
 	res.status(200).json({
 		status: true,
 		location: location,

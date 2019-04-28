@@ -48,11 +48,12 @@ exports.process_location = async (id, previousIntent, context, type) => {
 		console.error(error);
 	}
 
+	console.log(messageObj);
 	messageObj = {
 		...messageObj,
 		context: context,
 		intent: null
 	};
-
+	
 	return messageObj;
 }

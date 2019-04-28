@@ -25,6 +25,9 @@ module.exports = class GeneralLocalKnowledge extends BaseModule {
 		const location = userInfo.currentCoordinate;
 		const generalLocalKnowledges = await GeneralLocalKnowledgeRepository.getAllGeneralLocalKnowledge();
 		const nearestLocation = getNearestLocation(generalLocalKnowledges, location);
-		return responseMessage.reachGeneralLocalKnowledgeResponse(nearestLocation);
+		return {
+			messages: responseMessage.reachGeneralLocalKnowledgeResponse(nearestLocation),
+			generalLocalKnowledge: nearestLocation
+		}
 	}
 };

@@ -13,6 +13,7 @@ class UserActiveLogger {
 		this.ACTION_EAT = 1;
 		this.ACTION_STOP = 2;
 
+		this.INIT_ORIGINAL_DISTANCE = -1;
 		
 	}
 	createUserInfo(key, user) {
@@ -23,6 +24,7 @@ class UserActiveLogger {
 			currentAction: '',
 			currentCoordinate: '',
 			currentEventId: '',
+			originalDistance: this.INIT_ORIGINAL_DISTANCE,
 			lastIntent: '',
 			location: {
 				next: '',
@@ -203,6 +205,11 @@ class UserActiveLogger {
 	setNextGeneralLocalKnowledgeLocation(key, location){
 		let userActiveInfo = this.users[key];
 		userActiveInfo.generalLocalKnowledgeLocation.next = location;
+		this.users[key] = userActiveInfo;
+	}
+	setOriginalDistance(key, distance){
+		let userActiveInfo = this.users[key];
+		userActiveInfo.originalDistance = distance;
 		this.users[key] = userActiveInfo;
 	}
 	setCurrentGeneralLocalKnowledgeLocation(key, location){

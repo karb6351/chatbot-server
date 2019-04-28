@@ -26,7 +26,7 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
-  },{ sequelize })
+  },{ sequelize})
   // Culture.belongsToMany(Restaurant, { through: CultureRestaurant, foreignKey: 'culture_id', otherKey: 'restaurant_id'});
   return User
 }
