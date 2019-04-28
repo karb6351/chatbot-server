@@ -1,6 +1,6 @@
 const db = require('../../models');
-const RouteRepostory = require('../../repository/route');
-const EventRepostory = require('../../repository/event');
+const RouteRepostory = require(__dirname + '/../../repository/route');
+const EventRepostory = require(__dirname + '/../../repository/event');
 const GeneralLocalKnowledgeRepostory = require('../../repository/GeneralLocalKnowledge');
 
 const userActiveLogger = require('../services/user_active_logger');
