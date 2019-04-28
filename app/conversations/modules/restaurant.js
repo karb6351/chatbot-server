@@ -1,6 +1,6 @@
 const BaseModule = require('./base_module');
 
-const EventRepository = require('../../../repository/event');
+const EventRepository = require('../../../repository/Event');
 
 const responseMessage = require('../../../resources/string');
 const UserActiveLogger = require('../../services/user_active_logger');

@@ -1,7 +1,7 @@
 const BaseModule = require('./base_module');
 
 const db = require('../../../models');
-const EventRepository = require('../../../repository/event');
+const EventRepository = require('../../../repository/Event');
 const RouteRepository = require('../../../repository/route');
 const userActiveLogger = require('../../services/user_active_logger');
 const responseMessage = require('../../../resources/string');
