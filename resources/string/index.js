@@ -34,7 +34,6 @@ exports.wayToStartResponse = () => {
 			type: 'text',
 			content: 'Then you can start your journey.'
 		},
-		
 	]
 }
 

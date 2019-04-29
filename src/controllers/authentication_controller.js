@@ -114,3 +114,36 @@ exports.logout = (req, res) => {
 	req.session.username = null;
 	res.redirect('/home')
 };
+
+exports.doLoginWithPaintPW = (req, res) => {
+	const { username, password } = req.body;
+	db.Admin.findOne({where: {username}})
+	.then(user => {
+		if (!user) throw Error('User not found');
+		if (password == user.password){
+			req.session.username = username
+			req.flash('flash_message', 'asd');
+			// notificationHelper.addFlashMessage(req, notificationHelper.SUCCESS, `Welcome back.${username}`)
+			res.redirect('/home')
+		}else {
+			throw Error('Invalid password');
+		}
+	})
+}
+
+
+exports.doLoginWithPaintPW = (req, res) => {
+	const { username, password } = req.body;
+	db.Admin.findOne({where: {username}})
+	.then(user => {
+		if (!user) throw Error('User not found');
+		if (password == user.password){
+			req.session.username = username
+			req.flash('flash_message', 'asd');
+			// notificationHelper.addFlashMessage(req, notificationHelper.SUCCESS, `Welcome back.${username}`)
+			res.redirect('/home')
+		}else {
+			res.redirect('back')
+		}
+	})
+}

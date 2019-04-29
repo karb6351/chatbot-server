@@ -4,7 +4,6 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser');
-// const hbs = require('express-handlebars');
 const engine = require('ejs-mate');
 const path = require('path');
 const cookieSession = require('cookie-session');
@@ -14,16 +13,7 @@ const cookieParse = require('cookie-parser');
 const apiRoutes = require('./routes/api/index');
 const backendRoutes = require('./routes/backend/index');
 
-const startSocket = require('./socket');
-
 const methodOverride = require('method-override')
-
-// webpack setup
-// const webpack = require('webpack');
-// const webpackDevMiddleware = require('webpack-dev-middleware');
-// const webpackConfig = require('./config/webpack.config');
-// webpack(webpackConfig)
-// app.use(webpackDevMiddleware(webpack(webpackConfig)))
 
 // static asset
 app.use(express.static(__dirname + '/public'));
@@ -64,12 +54,6 @@ app.use(methodOverride(function (req, res) {
   }
 }))
 
-
-// view engine setup
-// app.engine('hbs', hbs({ extname: 'hbs', defaultLayout: 'app', layoutsDir: __dirname + '/resources/views/layouts/', partialsDir: __dirname + '/resources/views/partials/' }));
-// app.set('views', path.join(__dirname, 'resources/views'));
-// app.set('view engine', 'hbs');
-
 app.engine('ejs', engine);
 app.set('views', path.join(__dirname, 'resources/views'));
 app.set('view engine', 'ejs');
@@ -89,9 +73,6 @@ app.use(
 const server = app.listen(process.env.PORT || 8000, () => {
 	console.log('Server is running...');
 });
-
-// start socket io
-startSocket(server);
 
 //commmon variable
 app.locals.menu = require('./config/menu');

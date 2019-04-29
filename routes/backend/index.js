@@ -20,7 +20,8 @@ router.use(authMiddleware);
 
 // authentication
 router.get('/login', authenticationController.login)
-router.post('/login', authenticationController.doLogin)
+// router.post('/login', authenticationController.doLogin)
+router.post('/login', authenticationController.doLoginWithPaintPW)
 router.get('/logout', authenticationController.logout)
 
 // home

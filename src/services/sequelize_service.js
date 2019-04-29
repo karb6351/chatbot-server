@@ -8,7 +8,7 @@ const sequelize = new Sequelize(
 	`${config.username}`,
 	`${config.password}`,
 	{
-		dialect: `${config.dialect}`,
+		dialect: `mysql`,
 		host: `${config.host}`,
 		define: {
 			charset: 'utf8',
