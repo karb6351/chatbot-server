@@ -1,6 +1,6 @@
 const tokenHelper = require('../../helpers/token_helper');
 const _ = require('underscore');
-const guestPath = [ '/login', '/chat/init' ];
+const guestPath = [ '/chat/init' ];
 
 module.exports = (req, res, next) => {
 	// for guest

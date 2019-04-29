@@ -170,11 +170,13 @@ exports.updateLocation = async (req, res) => {
 		// messages = messageHelper.build(responseMessage.wrongDirectionResponse(), messageHelper.CHATBOT); 
 		// hasEvent = true;
 	}
-	res.status(200).json({
+	let returnObj = {
 		status: true,
 		location: location,
 		messages: messages,
 		hasEvent: hasEvent,
 		event: event
-	});
+	}
+	console.log(returnObj)
+	res.status(200).json(returnObj);
 };
