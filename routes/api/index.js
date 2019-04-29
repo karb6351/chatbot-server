@@ -17,8 +17,8 @@ router.put('/location/update', chatController.updateLocation);
 
 router.get('/route', routeController.apiGetRoutes);
 
-router.post('/login', authenticationController.apiLogin);
-router.post('/register', authenticationController.apiRegister);
+// router.post('/login', authenticationController.apiLogin);
+// router.post('/register', authenticationController.apiRegister);
 
 router.get('/', (req, res) => {
 	res.status(404).json({
