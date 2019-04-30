@@ -120,7 +120,7 @@ exports.updateLocation = async (req, res) => {
 	// check user is reach restaurant
 	if (currentLocation && currentLocation !== '') {
 		// check user is close to restaurant in 10m
-		if (getDistanceFromLatLonInKm(location, currentLocation.coordinate) < 0.01) {
+		if (getDistanceFromLatLonInKm(location, currentLocation.coordinate) < 0.02) {
 			try {
 				const nextEvent = await EventRepostory.findNextEventById(userInfo.currentEventId);
 				let isLast = nextEvent ? false : true;
@@ -151,7 +151,7 @@ exports.updateLocation = async (req, res) => {
 					if (nearestLocation && getDistanceFromLatLonInKm(location, {
 						latitude: nearestLocationCoordinate.lat,
 						longitude: nearestLocationCoordinate.lng
-					}) < 0.01){
+					}) < 0.02){
 						messageObj = await SpeechHandler.process_location(id, null, null, 'general_local_knowledge');
 						console.log(messageObj);
 						messages = messageHelper.build(messageObj.messages, messageHelper.CHATBOT); 

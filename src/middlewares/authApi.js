@@ -16,7 +16,7 @@ module.exports = (req, res, next) => {
 			req.userData = decode;
 			next();
 		} catch (err) {
-			res.status(404).json({ success: false, message: 'Unauthentication' });
+			res.status(403).json({ success: false, message: 'Unauthentication' });
 		}
 	}
 };
