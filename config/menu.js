@@ -44,29 +44,29 @@ module.exports = [
         label: "General Local Knowledge",
         submenu: []
       },
-      {
-        link: "#",
-        icon: "fa fa-table",
-        label: "Links",
-        submenu: [
-          {
-            link: "#",
-            icon: "fa fa-link",
-            label: "Link1",
-          },
-          {
-            link: "#",
-            icon: "fa fa-link",
-            label: "Link2",
-          }
-        ]
-      },
-      {
-        link: "#",
-        icon: "fa fa-info",
-        label: "About",
-        submenu: []
-      },
+      // {
+      //   link: "#",
+      //   icon: "fa fa-table",
+      //   label: "Links",
+      //   submenu: [
+      //     {
+      //       link: "#",
+      //       icon: "fa fa-link",
+      //       label: "Link1",
+      //     },
+      //     {
+      //       link: "#",
+      //       icon: "fa fa-link",
+      //       label: "Link2",
+      //     }
+      //   ]
+      // },
+      // {
+      //   link: "#",
+      //   icon: "fa fa-info",
+      //   label: "About",
+      //   submenu: []
+      // },
     ]
   },
   {
